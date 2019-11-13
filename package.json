@@ -43,6 +43,7 @@
     "@testing-library/react": "^9.3.1",
     "@types/googlemaps": "^3.38.0",
     "tslint": "^5.20.1",
+    "tslint-react": "^4.1.0",
     "typescript": "3.6.3"
   }
 }

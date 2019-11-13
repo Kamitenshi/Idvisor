@@ -1,3 +1,7 @@
-# Ionic React Conference Demo App
+# Launching the development server
 
-You can see a live demo here. (https://ionic-react-conference-app.firebaseapp.com/)
+Requirements:
+* ionic
+
+Command:
+* `ionic serve`

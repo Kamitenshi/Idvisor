@@ -27,7 +27,7 @@ import MainTabs from './pages/MainTabs';
 import { connect } from './data/connect';
 import { AppContextProvider } from './data/AppContext';
 import { loadConfData } from './data/sessions/sessions.actions';
-import {setIsLoggedIn, setUsername, loadUserData } from './data/user/user.actions';
+import { setIsLoggedIn, setUsername, loadUserData } from './data/user/user.actions';
 import Account from './pages/Account';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -35,6 +35,7 @@ import Support from './pages/Support';
 import Tutorial from './pages/Tutorial';
 import HomeOrTutorial from './components/HomeOrTutorial';
 import { Session } from "./models/Session";
+import { routes } from './constants/routes'
 
 const App: React.FC = () => {
   return (
@@ -56,14 +57,14 @@ interface DispatchProps {
   setUsername: typeof setUsername;
 }
 
-interface IonicAppProps extends StateProps, DispatchProps {}
+interface IonicAppProps extends StateProps, DispatchProps { }
 
 const IonicApp: React.FC<IonicAppProps> = ({ darkMode, sessions, setIsLoggedIn, setUsername, loadConfData, loadUserData }) => {
-  
+
   useEffect(() => {
     loadUserData();
     loadConfData();
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -76,13 +77,13 @@ const IonicApp: React.FC<IonicAppProps> = ({ darkMode, sessions, setIsLoggedIn, 
               <IonSplitPane contentId="main">
                 <Menu />
                 <IonRouterOutlet id="main">
-                  <Route path="/tabs" component={MainTabs} />
-                  <Route path="/account" component={Account} />
-                  <Route path="/login" component={Login} />
-                  <Route path="/signup" component={Signup} />
-                  <Route path="/support" component={Support} />
-                  <Route path="/tutorial" component={Tutorial} />
-                  <Route path="/logout" render={() => {
+                  <Route path={routes.tabs.path} component={MainTabs} />
+                  <Route path={routes.account.path} component={Account} />
+                  <Route path={routes.login.path} component={Login} />
+                  <Route path={routes.signup.path} component={Signup} />
+                  <Route path={routes.support.path} component={Support} />
+                  <Route path={routes.tutorial.path} component={Tutorial} />
+                  <Route path={routes.logout.path} render={() => {
                     setIsLoggedIn(false);
                     setUsername(undefined);
                     return <Redirect to="/tabs" />

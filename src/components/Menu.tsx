@@ -1,41 +1,11 @@
-import {
-  IonContent,
-  IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenu,
-  IonMenuToggle,
-  IonTitle,
-  IonToolbar,
-  IonToggle
-} from '@ionic/react';
-import { calendar, contacts, hammer, help, informationCircle, logIn, logOut, map, person, personAdd } from 'ionicons/icons';
+import { IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonTitle, IonToggle, IonToolbar } from '@ionic/react';
+import { hammer } from 'ionicons/icons';
 import React, { useState } from 'react';
-import { connect } from '../data/connect';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { connect } from '../data/connect';
 import { setDarkMode } from '../data/user/user.actions';
+import { pages } from '../constants/routes'
 
-const routes = {
-  appPages: [
-    { title: 'Schedule', path: '/tabs/schedule', icon: calendar },
-    { title: 'Speakers', path: '/tabs/speakers', icon: contacts },
-    { title: 'Map', path: '/tabs/map', icon: map },
-    { title: 'About', path: '/tabs/about', icon: informationCircle }
-  ],
-  loggedInPages: [
-    { title: 'Account', path: '/account', icon: person },
-    { title: 'Support', path: '/support', icon: help },
-    { title: 'Logout', path: '/logout', icon: logOut }
-  ],
-  loggedOutPages: [
-    { title: 'Login', path: '/login', icon: logIn },
-    { title: 'Support', path: '/support', icon: help },
-    { title: 'Signup', path: '/signup', icon: personAdd }
-  ]
-};
 
 interface Pages {
   title: string,
@@ -80,11 +50,11 @@ const Menu: React.FC<MenuProps> = ({ darkMode, history, isAuthenticated, setDark
       <IonContent class="outer-content">
         <IonList>
           <IonListHeader>Navigate</IonListHeader>
-          {renderlistItems(routes.appPages)}
+          {renderlistItems(pages.appPages)}
         </IonList>
         <IonList>
           <IonListHeader>Account</IonListHeader>
-          {isAuthenticated ? renderlistItems(routes.loggedInPages) : renderlistItems(routes.loggedOutPages)}
+          {isAuthenticated ? renderlistItems(pages.loggedInPages) : renderlistItems(pages.loggedOutPages)}
         </IonList>
         <IonList>
           <IonListHeader>Tutorial</IonListHeader>
