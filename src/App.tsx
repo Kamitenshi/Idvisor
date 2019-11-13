@@ -27,12 +27,13 @@ import MainTabs from './pages/MainTabs';
 import { connect } from './data/connect';
 import { AppContextProvider } from './data/AppContext';
 import { loadConfData } from './data/sessions/sessions.actions';
-import { setIsLoggedIn, setUsername, loadUserData } from './data/user/user.actions';
+import { setIsLoggedIn, setUsername, loadUserData, logoutUser } from './data/user/user.actions';
 import Account from './pages/Account';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Support from './pages/Support';
 import Tutorial from './pages/Tutorial';
+import Home from './pages/Home'
 import HomeOrTutorial from './components/HomeOrTutorial';
 import { Session } from "./models/Session";
 import { routes } from './constants/routes'
@@ -69,7 +70,7 @@ const IonicApp: React.FC<IonicAppProps> = ({ darkMode, sessions, setIsLoggedIn, 
 
   return (
     sessions.length === 0 ? (
-      <div></div>
+      <div/>
     ) : (
         <IonApp className={`${darkMode ? 'dark-theme' : ''}`}>
           <IonReactRouter>
@@ -88,7 +89,8 @@ const IonicApp: React.FC<IonicAppProps> = ({ darkMode, sessions, setIsLoggedIn, 
                     setUsername(undefined);
                     return <Redirect to="/tabs" />
                   }} />
-                  <Route path="/" component={HomeOrTutorial} exact />
+                  <Route path="/" component={HomeOrTutorial} exact={true} />
+                  <Route path="/home" component={Home} exact={true} />
                 </IonRouterOutlet>
               </IonSplitPane>
             </IonReactRouter>

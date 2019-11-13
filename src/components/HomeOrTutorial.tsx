@@ -8,7 +8,7 @@ interface StateProps {
 }
 
 const HomeOrTutorial: React.FC<StateProps> = ({ hasSeenTutorial }) => {
-  return hasSeenTutorial ? <Redirect to={routes.schedule.path} /> : <Redirect to={routes.tutorial.path} />
+  return hasSeenTutorial ? <Redirect to={routes.home.path} /> : <Redirect to={routes.tutorial.path} />
 };
 
 export default connect<{}, StateProps, {}>({
