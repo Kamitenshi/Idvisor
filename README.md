@@ -1,7 +1,7 @@
 # Launching the development server
 
 Requirements:
-* ionic
+* ionic: 5.4.4
 
 Command:
 * `ionic serve`
