@@ -1,0 +1,12 @@
+{
+  "name": "lrdf-idvisor-model",
+  "version": "1.0.0",
+  "description": "Gather models for front and back",
+  "main": "index.js",
+  "author": "Mikael Simarik",
+  "license": "MIT",
+  "devDependencies": {
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
+  }
+}
