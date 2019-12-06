@@ -1,22 +1,62 @@
-import { IonCard, IonCardTitle, IonImg, IonGrid } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardTitle, IonSlide, IonSlides } from '@ionic/react';
 import React from 'react';
 import Page from '../components/Page';
+import { connect } from '../data/connect';
+import * as selectors from '../data/selectors';
+import { JobDescription } from '../models/JobDescription';
 import './Home.scss';
+
+interface SlidesProps { jobDescriptions: JobDescription[] };
+interface OwnProps { };
+
+const Test: React.FC<SlidesProps> = ({ jobDescriptions }) => {
+
+    const slideOptions = {
+        initialSlide: 0,
+        speed: 400,
+        autoplay: true,
+        autoplayspeed: 400,
+    }
+
+    return (<IonSlides pager options={slideOptions}>
+        {jobDescriptions.map(job => {
+            return (
+                <IonSlide>
+                    <IonCard>
+                        <IonCardTitle>{job.title}</IonCardTitle>
+                        <IonCardContent>{job.description}</IonCardContent>
+                    </IonCard>
+                </IonSlide>
+            )
+        })}
+    </IonSlides>);
+}
+
+const Slides: React.FC<OwnProps> = connect(
+    {
+        mapStateToProps: (state) => ({
+            jobDescriptions: selectors.getJobsDescription(state)
+        }),
+        component: Test
+    }
+)
 
 
 interface HomeProps { };
 
-const titleImagePath = "assets/img/title.jpeg";
+const titleImagePath = "assets/img/home-title.jpeg";
 
 const Home: React.FC<HomeProps> = () => {
+    const title = "Découvrir les métiers du numérique";
     return (
         <Page title="home">
             <IonCard>
-                <img src={titleImagePath} />
+                <img src={titleImagePath} alt={title} />
                 <IonCardTitle class="card-title">
-                    Découvrir les métiers du numérique
-                        </IonCardTitle>
+                    {title}
+                </IonCardTitle>
             </IonCard>
+            <Slides />
         </Page>
     );
 }

@@ -1,13 +1,14 @@
 import { Plugins } from '@capacitor/core';
+import { Location } from '../models/Location';
 import { Session } from '../models/Session';
 import { Speaker } from '../models/Speaker';
-import { Location } from '../models/Location';
 
 const { Storage } = Plugins;
 
 const locationsUrl = '/assets/data/locations.json';
 const sessionsUrl = '/assets/data/sessions.json';
 const speakersUrl = '/assets/data/speakers.json';
+const jobsDescriptionUrl = '/assets/data/jobs.json'
 
 const HAS_LOGGED_IN = 'hasLoggedIn';
 const HAS_SEEN_TUTORIAL = 'hasSeenTutorial';
@@ -17,19 +18,22 @@ export const getConfData = async () => {
   const response = await Promise.all([
     fetch(sessionsUrl),
     fetch(locationsUrl),
-    fetch(speakersUrl)]);
+    fetch(speakersUrl),
+    fetch(jobsDescriptionUrl)]);
   const sessions = await response[0].json() as Session[];
   const locations = await response[1].json() as Location[];
   const speakers = await response[2].json() as Speaker[];
+  const jobsDescription = await response[3].json();
   const allTracks = sessions
     .reduce((all, session) => all.concat(session.tracks), [] as string[])
     .filter((trackName, index, array) => array.indexOf(trackName) === index)
     .sort();
   const data = {
-    sessions,
     locations,
+    sessions,
     speakers,
     allTracks,
+    jobsDescription,
     filteredTracks: [...allTracks]
   }
   return data;

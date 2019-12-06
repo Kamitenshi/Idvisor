@@ -1,7 +1,9 @@
+import { JobDescription } from '../../models/JobDescription';
 import { Location } from '../../models/Location';
-import { Speaker } from '../../models/Speaker';
 import { Session } from '../../models/Session';
+import { Speaker } from '../../models/Speaker';
 export interface SessionsState {
+  jobsDescription: JobDescription[];
   sessions: Session[];
   speakers: Speaker[];
   favorites: number[];

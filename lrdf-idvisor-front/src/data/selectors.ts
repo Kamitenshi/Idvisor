@@ -1,11 +1,12 @@
-import { createSelector } from 'reselect';
 import { parseISO as parseDate } from 'date-fns';
+import { createSelector } from 'reselect';
 import { Session } from '../models/Session';
 import { SessionGroup } from '../models/SessionGroup';
 import { AppState } from './state';
 
 const getSessions = (state: AppState) => state.data.sessions;
 export const getSpeakers = (state: AppState) => state.data.speakers;
+export const getJobsDescription = (state: AppState) => state.data.jobsDescription;
 const getFilteredTracks = (state: AppState) => state.data.filteredTracks;
 const getFavoriteIds = (state: AppState) => state.data.favorites;
 const getSearchText = (state: AppState) => state.data.searchText;
@@ -95,10 +96,10 @@ export const getSpeaker = createSelector(
 export const getSpeakerSessions = createSelector(
   getSessions,
   (sessions) => {
-    const speakerSessions: {[key: number]: Session[]} = {};
+    const speakerSessions: { [key: number]: Session[] } = {};
     sessions.forEach(session => {
       session.speakerIds.forEach(speakerId => {
-        if(speakerSessions[speakerId]) {
+        if (speakerSessions[speakerId]) {
           speakerSessions[speakerId].push(session);
         } else {
           speakerSessions[speakerId] = [session];
