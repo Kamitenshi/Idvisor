@@ -7,9 +7,8 @@ import { JobDescription } from '../models/JobDescription';
 import './Home.scss';
 
 interface SlidesProps { jobDescriptions: JobDescription[] };
-interface OwnProps { };
 
-const Test: React.FC<SlidesProps> = ({ jobDescriptions }) => {
+const SlidesComp: React.FC<SlidesProps> = ({ jobDescriptions }) => {
 
     const slideOptions = {
         initialSlide: 0,
@@ -32,21 +31,18 @@ const Test: React.FC<SlidesProps> = ({ jobDescriptions }) => {
     </IonSlides>);
 }
 
-const Slides: React.FC<OwnProps> = connect(
+const Slides: React.FC = connect(
     {
         mapStateToProps: (state) => ({
             jobDescriptions: selectors.getJobsDescription(state)
         }),
-        component: Test
+        component: SlidesComp
     }
 )
 
-
-interface HomeProps { };
-
 const titleImagePath = "assets/img/home-title.jpeg";
 
-const Home: React.FC<HomeProps> = () => {
+const Home: React.FC = () => {
     const title = "Découvrir les métiers du numérique";
     return (
         <Page title="home">
