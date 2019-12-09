@@ -2,7 +2,7 @@ import express from "express";
 
 type SuccessStatus = 200;
 
-type ErrorStatus = 400;
+type ErrorStatus = 400 | 500;
 type Status = SuccessStatus | ErrorStatus;
 
 class HttpReply {

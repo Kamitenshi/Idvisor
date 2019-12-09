@@ -19,8 +19,9 @@ class UserController {
     }
 
     private getAllUsers = async (request: express.Request, response: express.Response) => {
-        const users = await this.userRepository.find();
-        response.send(users);
+        await this.userRepository.find()
+            .then(HttpSuccess.createSender(response, "All users gathered"))
+            .catch(HttpException.createSender(response, 500, "All users could not be gathered"));
     }
 
     private createUser = async (request: express.Request, response: express.Response) => {
