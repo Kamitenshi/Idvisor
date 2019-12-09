@@ -1,8 +1,8 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import { createConnection } from 'typeorm';
+import errorMiddleware from './middleware/error';
 import config from './ormconfig';
-import { connect } from 'http2';
 import UserController from './user/user.controller';
 
 class App {
@@ -15,6 +15,7 @@ class App {
 
         this.initializeMiddlewares();
         this.initializeControllers();
+        this.initializeErrorHandling();
     }
 
     private initializeMiddlewares() {
@@ -28,6 +29,10 @@ class App {
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);
         });
+    }
+
+    private initializeErrorHandling() {
+        this.app.use(errorMiddleware);
     }
 
     private static async connectToDatabase() {

@@ -1,7 +1,7 @@
 import express from "express";
 import { getRepository } from "typeorm";
+import modelValidatorMiddleware from "../middleware/model.validator";
 import User from "./user.entity";
-import { request } from "http";
 
 class UserController {
     public path = '/user'
@@ -14,7 +14,7 @@ class UserController {
 
     private initializeRoutes() {
         this.router.get(this.path, this.getAllUsers);
-        this.router.post(this.path, this.createUser);
+        this.router.post(this.path, modelValidatorMiddleware(User), this.createUser);
     }
 
     private getAllUsers = async (request: express.Request, response: express.Response) => {
@@ -23,7 +23,6 @@ class UserController {
     }
 
     private createUser = async (request: express.Request, response: express.Response) => {
-        // TODO : add error checking
         const userData = request.body;
         const newUser = this.userRepository.create(userData);
         await this.userRepository.save(newUser);
