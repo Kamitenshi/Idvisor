@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import * as express from 'express';
-import HttpException from '../utils/HttpException';
+import { HttpException } from '../utils/HttpReply';
 
 function modelValidatorMiddleware<T>(type: any): express.RequestHandler {
     return (req, res, next) => {
