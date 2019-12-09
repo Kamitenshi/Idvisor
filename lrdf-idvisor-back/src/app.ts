@@ -1,5 +1,7 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import express from 'express';
+import morgan from 'morgan';
 import { createConnection } from 'typeorm';
 import errorMiddleware from './middleware/error';
 import config from './ormconfig';
@@ -19,6 +21,8 @@ class App {
     }
 
     private initializeMiddlewares() {
+        this.app.use(morgan("dev"));
+        this.app.use(cors());
         this.app.use(bodyParser.json());
     }
 
