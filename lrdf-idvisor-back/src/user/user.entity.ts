@@ -1,13 +1,14 @@
-import { IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IsEmail, IsIn, IsString } from 'class-validator';
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 class User {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+  @PrimaryColumn()
+  @IsEmail()
+  public mail!: string;
 
   @Column()
-  @IsString()
+  @IsIn(['admin', 'advisor', 'student'])
   public role!: string;
 
   @Column()

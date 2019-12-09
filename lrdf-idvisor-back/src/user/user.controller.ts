@@ -1,6 +1,7 @@
 import express from "express";
 import { getRepository } from "typeorm";
 import modelValidatorMiddleware from "../middleware/model.validator";
+import HttpException from "../utils/HttpException";
 import User from "./user.entity";
 
 class UserController {
@@ -24,9 +25,9 @@ class UserController {
 
     private createUser = async (request: express.Request, response: express.Response) => {
         const userData = request.body;
-        const newUser = this.userRepository.create(userData);
-        await this.userRepository.save(newUser);
-        response.send("Success");
+        await this.userRepository.insert(userData)
+            .then(msg => response.send("Success"))
+            .catch(err => HttpException.abort(response, 400, err));
     }
 }
 

@@ -1,3 +1,5 @@
+import express from "express";
+
 class HttpException extends Error {
     status: number;
     message: string;
@@ -5,6 +7,12 @@ class HttpException extends Error {
         super(message);
         this.status = status;
         this.message = message;
+    }
+
+    static abort(response: express.Response, status: number, message: string) {
+        response
+            .status(status)
+            .send({ status, message });
     }
 }
 
