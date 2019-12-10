@@ -3,9 +3,10 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import { createConnection } from 'typeorm';
+
 import errorMiddleware from './middleware/error';
 import config from './ormconfig';
-import UserController from './user/user.controller';
+import UserController from './services/user/user.controller';
 
 class App {
     public app: express.Application;

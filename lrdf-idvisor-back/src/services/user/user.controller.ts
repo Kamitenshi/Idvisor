@@ -1,8 +1,9 @@
-import express from "express";
-import { getRepository } from "typeorm";
-import modelValidatorMiddleware from "../middleware/model.validator";
-import { HttpException, HttpSuccess } from "../utils/HttpReply";
-import User from "./user.entity";
+import express from 'express';
+import { getRepository } from 'typeorm';
+
+import modelValidatorMiddleware from '../../middleware/model.validator';
+import { HttpException, HttpSuccess } from '../../utils/HttpReply';
+import User from './user.entity';
 
 class UserController {
     public path = '/user'

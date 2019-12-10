@@ -1,12 +1,15 @@
 import { ConnectionOptions } from 'typeorm';
 
+import { env } from './utils/env';
+
+
 const config: ConnectionOptions = {
     type: 'postgres',
-    host: process.env.POSTGRES_HOST,
-    port: Number(process.env.POSTGRES_PORT),
-    username: process.env.POSTGRES_USER,
-    //TODO add a password - password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
+    host: env.POSTGRES_HOST,
+    port: Number(env.POSTGRES_PORT),
+    username: env.POSTGRES_USER,
+    //TODO add a password - password: env.POSTGRES_PASSWORD,
+    database: env.POSTGRES_DB,
     entities: [
         __dirname + '/../**/*.entity{.ts,.js}',
     ],

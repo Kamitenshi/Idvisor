@@ -1,9 +1,23 @@
-import express from "express";
+import express from 'express';
 
+import { env } from './env';
+
+
+
+
+
+
+
+
+const SUCCESS_STATUS = 200
 type SuccessStatus = 200;
 
 type ErrorStatus = 400 | 500;
 type Status = SuccessStatus | ErrorStatus;
+
+function isSuccessStatus(status: Status): status is SuccessStatus {
+    return status == SUCCESS_STATUS;
+}
 
 class HttpReply {
     status: Status;
@@ -21,13 +35,18 @@ class HttpReply {
         this.createSender(response, status, "")(message);
     }
 
-    static createSender(response: express.Response, status: Status, internalMessage: string) {
+    private static sendResponse(status: Status, responseMessage: string, result: string) {
+        return (response: express.Response) => {
+            if (isSuccessStatus(status) || env.isDevelopment) response.status(status).send({ status, responseMessage, result });
+            else response.status(status).send({ status, responseMessage });
+        }
+    }
+
+    static createSender(response: express.Response, status: Status, responseMessage: string) {
         return function (result) {
-            const output = '[' + internalMessage + ']' + ': ' + JSON.stringify(result);
-            console.log(output)
-            response
-                .status(status)
-                .send({ status, internalMessage, result });
+            const output = '[' + responseMessage + ']' + ': ' + JSON.stringify(result);
+            console.log(output);
+            HttpReply.sendResponse(status, responseMessage, result)(response);
         }
     }
 }
