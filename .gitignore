@@ -84,3 +84,7 @@ yarn-error.log*
 
 # editor
 .vscode
+
+# secret keys
+
+*.pem

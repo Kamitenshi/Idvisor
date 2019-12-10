@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from "cookie-parser";
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
@@ -7,6 +8,7 @@ import errorMiddleware from './middleware/error';
 import config from './ormconfig';
 import AuthController from './services/auth/auth.controller';
 import UserController from './services/user/user.controller';
+import { env } from './utils/env';
 
 
 class App {
@@ -15,7 +17,7 @@ class App {
 
     private constructor() {
         this.app = express();
-        this.port = Number(process.env.SERVER_PORT);
+        this.port = Number(env.SERVER_PORT);
 
         this.initializeMiddlewares();
         this.initializeControllers();
@@ -26,7 +28,8 @@ class App {
         this.app.use(morgan("dev"));
         this.app.use(cors());
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }))
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(cookieParser());
     }
 
     private initializeControllers() {
