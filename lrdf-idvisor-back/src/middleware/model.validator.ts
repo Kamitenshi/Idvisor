@@ -10,7 +10,7 @@ function modelValidatorMiddleware<T>(type: any): express.RequestHandler {
                 if (errors.length > 0) {
                     const message = errors.map((error: ValidationError) => Object.values(error.constraints)).join(', ');
                     const status = 400
-                    next(new HttpException(400, message));
+                    next(new HttpException(status, message));
                 } else {
                     next();
                 }

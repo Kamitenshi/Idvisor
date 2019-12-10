@@ -3,10 +3,11 @@ import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import { createConnection } from 'typeorm';
-
 import errorMiddleware from './middleware/error';
 import config from './ormconfig';
+import AuthController from './services/auth/auth.controller';
 import UserController from './services/user/user.controller';
+
 
 class App {
     public app: express.Application;
@@ -25,11 +26,13 @@ class App {
         this.app.use(morgan("dev"));
         this.app.use(cors());
         this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }))
     }
 
     private initializeControllers() {
         const controllers = [
             new UserController(),
+            new AuthController()
         ];
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);
@@ -42,7 +45,7 @@ class App {
 
     private static async connectToDatabase() {
         try {
-            await createConnection(config);
+            const db = await createConnection(config);
             console.log('Successfully connected to the database');
         }
         catch (error) {

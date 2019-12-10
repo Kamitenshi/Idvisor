@@ -5,7 +5,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 class User {
   @PrimaryColumn()
   @IsEmail()
-  public mail!: string;
+  public email!: string;
 
   @Column()
   @IsIn(['admin', 'advisor', 'student'])

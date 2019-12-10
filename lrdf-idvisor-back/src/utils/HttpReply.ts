@@ -1,6 +1,6 @@
 import express from 'express';
-
 import { env } from './env';
+
 
 
 
@@ -12,13 +12,15 @@ import { env } from './env';
 const SUCCESS_STATUS = 200
 type SuccessStatus = 200;
 
-type ErrorStatus = 400 | 500;
+type ErrorStatus = 400 | 403 | 500;
 type Status = SuccessStatus | ErrorStatus;
 
 function isSuccessStatus(status: Status): status is SuccessStatus {
     return status == SUCCESS_STATUS;
 }
 
+
+//TODO : simplify this class
 class HttpReply {
     status: Status;
     message: string;
@@ -28,11 +30,15 @@ class HttpReply {
     }
 
     public send(response: express.Response) {
-        HttpReply.send(response, this.status, this.message);
+        HttpReply.send(response, this.status, this.message)("");
     }
 
-    static send(response: express.Response, status: Status, message: string) {
-        this.createSender(response, status, "")(message);
+    static send(response: express.Response, status: Status, responseMessage: string) {
+        return function (result) {
+            const output = '[' + responseMessage + ']' + ': ' + JSON.stringify(result);
+            console.log(output);
+            HttpReply.sendResponse(status, responseMessage, result)(response);
+        }
     }
 
     private static sendResponse(status: Status, responseMessage: string, result: string) {
@@ -41,21 +47,11 @@ class HttpReply {
             else response.status(status).send({ status, responseMessage });
         }
     }
-
-    static createSender(response: express.Response, status: Status, responseMessage: string) {
-        return function (result) {
-            const output = '[' + responseMessage + ']' + ': ' + JSON.stringify(result);
-            console.log(output);
-            HttpReply.sendResponse(status, responseMessage, result)(response);
-        }
-    }
 }
 
-
-
-const createSenderFunction = function <T extends Status>() {
+const createSendFunction = function <T extends Status>() {
     return function (response: express.Response, status: T, message: string) {
-        return HttpReply.createSender(response, status, message);
+        return HttpReply.send(response, status, message);
     };
 }
 
@@ -66,11 +62,11 @@ export class HttpException extends Error {
         this.reply = new HttpReply(status || 500, message || "Something went wrong");
     }
 
-    public static createSender = createSenderFunction<ErrorStatus>();
+    public static sendCallback = createSendFunction<ErrorStatus>();
 }
 
 export class HttpSuccess {
-    public static createSender(response: express.Response, message: string) {
-        return createSenderFunction<SuccessStatus>()(response, 200, message);
+    public static sendCallback(response: express.Response, message: string) {
+        return createSendFunction<SuccessStatus>()(response, 200, message);
     }
 }
