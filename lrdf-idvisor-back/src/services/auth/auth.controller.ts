@@ -1,4 +1,4 @@
-import { genSalt, hash } from 'bcryptjs';
+import { compare, genSalt, hash } from 'bcryptjs';
 import express from "express";
 import { getRepository } from 'typeorm';
 import modelValidatorMiddleware from "../../middleware/model.validator";
@@ -18,6 +18,7 @@ class AuthController implements Controller {
 
     private initializeRoutes() {
         this.router.post(`${this.path}/register`, modelValidatorMiddleware(User), this.register);
+        this.router.post(`${this.path}/login`, this.loggingIn);
     }
 
     private register = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -37,12 +38,31 @@ class AuthController implements Controller {
                 next(new HttpException(403, "E-mail is already taken"));
             }
         }
-        catch (err) {
+        catch (err) { //TODO: pass the error to the httpException
             next(new HttpException(500, "Could not register user"));
         }
     }
 
     private loggingIn = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const userData: User = request.body;
+        try {
+            const user = await this.userRepository.findOne({ email: userData.email });
+            if (user) {
+                const passwordMatch = await compare(userData.password, user.password);
+                if (passwordMatch) {
+                    response.send("success");
+                }
+                else {
+                    next(new HttpException(403, "Wrong credentials"));
+                }
+            }
+            else {
+                next(new HttpException(403, "Wrong credentials"));
+            }
+        }
+        catch (err) {
+            next(new HttpException(500, "could not loggin user"));
+        }
     }
 }
 
