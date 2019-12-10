@@ -2,10 +2,13 @@ import express from 'express';
 import { getRepository } from 'typeorm';
 
 import modelValidatorMiddleware from '../../middleware/model.validator';
+import Controller from '../../utils/controller';
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
 import User from './user.entity';
 
-class UserController {
+
+
+class UserController implements Controller {
     public path = '/user'
     public router = express.Router()
     private userRepository = getRepository(User)
