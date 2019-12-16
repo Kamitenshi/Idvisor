@@ -1,7 +1,6 @@
 import { compare, genSalt, hash } from 'bcryptjs';
 import express from "express";
 import { getRepository } from 'typeorm';
-import isAuthenticated from '../../middleware/auth';
 import modelValidatorMiddleware from "../../middleware/model.validator";
 import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
@@ -22,11 +21,6 @@ class AuthController implements Controller {
         this.router.post(`${this.path}/register`, modelValidatorMiddleware(User), this.register);
         this.router.post(`${this.path}/login`, this.loggingIn);//TODO: add data check
         this.router.get(`${this.path}/logout`, this.loggout);
-        this.router.get(`${this.path}/test`, isAuthenticated, this.test);
-    }
-
-    private test = async (req, res, next) => {
-        res.send(200);
     }
 
     private register = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -58,7 +52,7 @@ class AuthController implements Controller {
             if (user) {
                 const passwordMatch = await compare(userData.password, user.password);
                 if (passwordMatch) {
-                    await createToken(response, user.role);
+                    createToken(response, user.role);
                     HttpSuccess.send(response, `Session created - user: ${userData.email}`);
                 }
                 else {
