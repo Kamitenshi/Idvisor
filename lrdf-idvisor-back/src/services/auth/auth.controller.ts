@@ -6,7 +6,7 @@ import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from "../../utils/HttpReply";
 import { createToken, deleteToken } from '../../utils/jwt';
-import User from "../user/user.entity";
+import User, { LoggingUser, RegisteringUser } from "../user/user.entity";
 
 class AuthController implements Controller {
     public path = '/auth';
@@ -18,8 +18,8 @@ class AuthController implements Controller {
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/register`, modelValidatorMiddleware(User), this.register);
-        this.router.post(`${this.path}/login`, this.loggingIn);//TODO: add data check
+        this.router.post(`${this.path}/register`, modelValidatorMiddleware(RegisteringUser), this.register);
+        this.router.post(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
         this.router.get(`${this.path}/logout`, this.loggout);
     }
 
