@@ -1,6 +1,8 @@
 import { IsEmail, IsIn, IsString } from 'class-validator';
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
+export type Role = "admin" | "student" | "advisor";
+
 @Entity()
 class User {
   @PrimaryColumn()
@@ -9,7 +11,7 @@ class User {
 
   @Column()
   @IsIn(['admin', 'advisor', 'student'])
-  public role!: string;
+  public role!: Role;
 
   @Column()
   @IsString()

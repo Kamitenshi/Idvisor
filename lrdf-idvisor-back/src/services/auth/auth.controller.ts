@@ -1,13 +1,12 @@
 import { compare, genSalt, hash } from 'bcryptjs';
 import express from "express";
-import { readFileSync } from 'fs';
-import { sign } from "jsonwebtoken";
 import { getRepository } from 'typeorm';
 import isAuthenticated from '../../middleware/auth';
 import modelValidatorMiddleware from "../../middleware/model.validator";
 import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from "../../utils/HttpReply";
+import { createToken, deleteToken } from '../../utils/jwt';
 import User from "../user/user.entity";
 
 class AuthController implements Controller {
@@ -26,8 +25,8 @@ class AuthController implements Controller {
         this.router.get(`${this.path}/test`, isAuthenticated, this.test);
     }
 
-    private test = async (request, response: express.Response, next: express.NextFunction) => {
-        response.send(request.user);
+    private test = async (req, res, next) => {
+        res.send(200);
     }
 
     private register = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -52,11 +51,6 @@ class AuthController implements Controller {
         }
     }
 
-    private async createToken() {
-        let privateKey = readFileSync('private.pem', 'utf8');
-        return sign({ "body": "stuff" }, "MySuperSecretPassPhrase", { algorithm: 'HS256' });
-    }
-
     private loggingIn = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const userData: User = request.body;
         try {
@@ -64,9 +58,8 @@ class AuthController implements Controller {
             if (user) {
                 const passwordMatch = await compare(userData.password, user.password);
                 if (passwordMatch) {
-                    const token = await this.createToken();
-                    response.cookie('token', token, { maxAge: 1000 * 60 * 60 });
-                    response.send(token);
+                    await createToken(response, user.role);
+                    HttpSuccess.send(response, `Session created - user: ${userData.email}`);
                 }
                 else {
                     next(new HttpException(403, "Wrong credentials"));
@@ -82,8 +75,8 @@ class AuthController implements Controller {
     }
 
     private loggout = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        response.clearCookie('token');
-        response.send(200);
+        deleteToken(response);
+        HttpSuccess.send(response, "Session ended");
     }
 }
 

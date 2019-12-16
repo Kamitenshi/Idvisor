@@ -69,4 +69,8 @@ export class HttpSuccess {
     public static sendCallback(response: express.Response, message: string) {
         return createSendFunction<SuccessStatus>()(response, 200, message);
     }
+
+    public static send(response: express.Response, message: string) {
+        this.sendCallback(response, message)("");
+    }
 }
