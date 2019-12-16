@@ -39,6 +39,12 @@ Here are the steps to use data:
 
 *Nota bene*: A simple example can be found in  `pages/Home.tsx` with the Slides component.
 
+### Adding a library
+
+1. Go to the right part of the project
+2. For production libraries : `yarn add 'package'`
+3. For development libraries : `yarn add 'package' --dev`
+
 ## Development accesses
 
 ### Front
