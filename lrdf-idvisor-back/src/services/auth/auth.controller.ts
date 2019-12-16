@@ -46,8 +46,8 @@ class AuthController implements Controller {
                 next(new HttpException(403, "E-mail is already taken"));
             }
         }
-        catch (err) { //TODO: pass the error to the httpException
-            next(new HttpException(500, "Could not register user"));
+        catch (err) {
+            next(new HttpException(500, "Could not register user", err));
         }
     }
 
@@ -70,7 +70,7 @@ class AuthController implements Controller {
             }
         }
         catch (err) {
-            next(new HttpException(500, "could not loggin user"));
+            next(new HttpException(500, "Could not loggin user", err));
         }
     }
 

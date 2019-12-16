@@ -24,13 +24,15 @@ function isSuccessStatus(status: Status): status is SuccessStatus {
 class HttpReply {
     status: Status;
     message: string;
-    constructor(status: Status, message: string) {
+    result: string;
+    constructor(status: Status, message: string, result: string) {
         this.status = status;
         this.message = message;
+        this.result = result;
     }
 
     public send(response: express.Response) {
-        HttpReply.send(response, this.status, this.message)("");
+        HttpReply.send(response, this.status, this.message)(this.result);
     }
 
     static send(response: express.Response, status: Status, responseMessage: string) {
@@ -57,9 +59,9 @@ const createSendFunction = function <T extends Status>() {
 
 export class HttpException extends Error {
     reply: HttpReply
-    constructor(status: ErrorStatus, message: string) {
+    constructor(status: ErrorStatus, message: string, result: string = "") {
         super(message);
-        this.reply = new HttpReply(status || 500, message || "Something went wrong");
+        this.reply = new HttpReply(status || 500, message || "Something went wrong", result);
     }
 
     public static sendCallback = createSendFunction<ErrorStatus>();

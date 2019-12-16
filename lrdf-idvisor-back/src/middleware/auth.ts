@@ -6,7 +6,7 @@ export default async function isAuthenticated(request, res, next) {
         next();
     }
     catch (err) {
-        res.status(500).json({ error: "Not Authorized" });
+        res.status(500).json({ error: "Not Authorized" }); //TODO: give a more precise answer (server down, not valid token, ...)
 
     }
 }
