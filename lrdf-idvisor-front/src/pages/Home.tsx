@@ -1,60 +1,76 @@
-import { IonCard, IonCardContent, IonCardTitle, IonSlide, IonSlides } from '@ionic/react';
+import {
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenuButton,
+  IonPage,
+  IonTitle,
+  IonToolbar
+  } from '@ionic/react';
+import { book, build, colorFill, grid } from 'ionicons/icons';
 import React from 'react';
-import Page from '../components/Page';
-import { connect } from '../data/connect';
-import * as selectors from '../data/selectors';
-import { JobDescription } from '../models/JobDescription';
-import './Home.scss';
+import './Home.css';
 
-interface SlidesProps { jobDescriptions: JobDescription[] };
+const HomePage: React.FC = () => {
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Home</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <IonCard className="welcome-card">
+          <img src="/assets/shapes.svg" alt=""/>
+          <IonCardHeader>
+            <IonCardSubtitle>Get Started</IonCardSubtitle>
+            <IonCardTitle>Welcome to Ionic</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <p>
+              Now that your app has been created, you'll want to start building out features and
+              components. Check out some of the resources below for next steps.
+            </p>
+          </IonCardContent>
+        </IonCard>
 
-const SlidesComp: React.FC<SlidesProps> = ({ jobDescriptions }) => {
+        <IonList lines="none">
+          <IonListHeader>
+            <IonLabel>Resources</IonLabel>
+          </IonListHeader>
+          <IonItem href="https://ionicframework.com/docs/" target="_blank">
+            <IonIcon slot="start" color="medium" icon={book} />
+            <IonLabel>Ionic Documentation</IonLabel>
+          </IonItem>
+          <IonItem href="https://ionicframework.com/docs/building/scaffolding" target="_blank">
+            <IonIcon slot="start" color="medium" icon={build} />
+            <IonLabel>Scaffold Out Your App</IonLabel>
+          </IonItem>
+          <IonItem href="https://ionicframework.com/docs/layout/structure" target="_blank">
+            <IonIcon slot="start" color="medium" icon={grid} />
+            <IonLabel>Change Your App Layout</IonLabel>
+          </IonItem>
+          <IonItem href="https://ionicframework.com/docs/theming/basics" target="_blank">
+            <IonIcon slot="start" color="medium" icon={colorFill} />
+            <IonLabel>Theme Your App</IonLabel>
+          </IonItem>
+        </IonList>
+      </IonContent>
+    </IonPage>
+  );
+};
 
-    const slideOptions = {
-        initialSlide: 0,
-        speed: 400,
-        autoplay: true,
-        autoplayspeed: 400,
-    }
-
-    return (<IonSlides pager options={slideOptions}>
-        {jobDescriptions.map(job => {
-            return (
-                <IonSlide>
-                    <IonCard>
-                        <IonCardTitle>{job.title}</IonCardTitle>
-                        <IonCardContent>{job.description}</IonCardContent>
-                    </IonCard>
-                </IonSlide>
-            )
-        })}
-    </IonSlides>);
-}
-
-const Slides: React.FC = connect(
-    {
-        mapStateToProps: (state) => ({
-            jobDescriptions: selectors.getJobsDescription(state)
-        }),
-        component: SlidesComp
-    }
-)
-
-const titleImagePath = "assets/img/home-title.jpeg";
-
-const Home: React.FC = () => {
-    const title = "Découvrir les métiers du numérique";
-    return (
-        <Page title="home">
-            <IonCard>
-                <img src={titleImagePath} alt={title} />
-                <IonCardTitle class="card-title">
-                    {title}
-                </IonCardTitle>
-            </IonCard>
-            <Slides />
-        </Page>
-    );
-}
-
-export default Home;
+export default HomePage;
