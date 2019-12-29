@@ -73,3 +73,22 @@ Here are the steps to use data:
 ### Database
 
 [tutorial](documentation : https://wanago.io/2019/01/14/express-postgres-relational-databases-typeorm/)
+
+
+## Development Examples
+
+### Selector
+
+```
+const sessionSelector = (state: RootState) => state.session
+
+const username = createSelector(
+  sessionSelector,
+  session => {
+    return session.username
+  }
+)
+const mapState = (state: RootState) => ({
+  username: username(state)
+})
+```
