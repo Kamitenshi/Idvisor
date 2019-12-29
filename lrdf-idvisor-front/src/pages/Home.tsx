@@ -1,60 +1,83 @@
-import { IonCard, IonCardContent, IonCardTitle, IonSlide, IonSlides } from '@ionic/react';
-import React from 'react';
-import Page from '../components/Page';
-import { connect } from '../data/connect';
-import * as selectors from '../data/selectors';
-import { JobDescription } from '../models/JobDescription';
-import './Home.scss';
+import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { createSelector } from '@reduxjs/toolkit';
+import React, { useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { RootState } from '../app/rootReducer';
+import { logout, signin } from "../features/session/sessionSlice";
+import SignupForm from '../features/session/SignupForm';
+import './Home.css';
 
-interface SlidesProps { jobDescriptions: JobDescription[] };
-
-const SlidesComp: React.FC<SlidesProps> = ({ jobDescriptions }) => {
-
-    const slideOptions = {
-        initialSlide: 0,
-        speed: 400,
-        autoplay: true,
-        autoplayspeed: 400,
-    }
-
-    return (<IonSlides pager options={slideOptions}>
-        {jobDescriptions.map(job => {
-            return (
-                <IonSlide>
-                    <IonCard>
-                        <IonCardTitle>{job.title}</IonCardTitle>
-                        <IonCardContent>{job.description}</IonCardContent>
-                    </IonCard>
-                </IonSlide>
-            )
-        })}
-    </IonSlides>);
+interface HomeInterface {
+  username: string
 }
 
-const Slides: React.FC = connect(
-    {
-        mapStateToProps: (state) => ({
-            jobDescriptions: selectors.getJobsDescription(state)
-        }),
-        component: SlidesComp
-    }
+const sessionSelector = (state: RootState) => state.session
+
+const username = createSelector(
+  sessionSelector,
+  session => {
+    return session.username
+  }
 )
+const mapState = (state: RootState) => ({
+  username: username(state)
+})
 
-const titleImagePath = "assets/img/home-title.jpeg";
+const HomePage: React.FC<HomeInterface> = ({ username }) => {
 
-const Home: React.FC = () => {
-    const title = "Découvrir les métiers du numérique";
-    return (
-        <Page title="home">
-            <IonCard>
-                <img src={titleImagePath} alt={title} />
-                <IonCardTitle class="card-title">
-                    {title}
-                </IonCardTitle>
-            </IonCard>
-            <Slides />
-        </Page>
-    );
-}
+  const dispatch = useDispatch()
 
-export default Home;
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+
+  const buttonLogout = () => {
+    dispatch(logout)
+  }
+
+  const submit = () => {
+    dispatch(signin(email, password))
+  }
+
+  const connectedInfo = username ? (
+    <div>
+      <h1>Nom utilisateur: {username}</h1>
+      <IonButton onClick={buttonLogout}>
+        Logout
+        </IonButton>
+    </div>) : null;
+
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Home</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        {connectedInfo}
+        <h1>Connect</h1>
+        <form onSubmit={(e) => { e.preventDefault(); submit() }}>
+
+          <IonList>
+            <IonItem>
+              <IonLabel>Email</IonLabel>
+              <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
+            </IonItem>
+            <IonItem>
+              <IonLabel>Password</IonLabel>
+              <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)} />
+            </IonItem>
+          </IonList>
+          <IonButton type='submit'>Log in</IonButton>
+        </form>
+        <SignupForm />
+      </IonContent>
+    </IonPage >
+  );
+};
+
+export default connect(mapState)(HomePage);
