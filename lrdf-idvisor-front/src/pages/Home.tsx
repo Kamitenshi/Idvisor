@@ -12,8 +12,8 @@ const Header: React.FC<HeaderInterface> = () => {
         <IonTitle>{appName}</IonTitle>
       </IonButtons>
       <IonButtons slot='end'>
-        <IonButton id='button-signup'>S'inscrire</IonButton>
-        <IonButton>Se connecter</IonButton>
+        <IonButton id='button-signup' routerLink='/sign' routerDirection='forward'>S'inscrire</IonButton>
+        <IonButton routerLink='/sign'>Se connecter</IonButton>
       </IonButtons>
     </IonToolbar>
   </IonHeader>)
