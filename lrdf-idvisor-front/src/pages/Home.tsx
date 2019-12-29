@@ -1,27 +1,48 @@
-import {
-  IonButtons,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonMenuButton,
-  IonPage,
-  IonTitle,
-  IonToolbar
-  } from '@ionic/react';
-import { book, build, colorFill, grid } from 'ionicons/icons';
-import React from 'react';
+// @ts-nocheck
+import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { createSelector } from '@reduxjs/toolkit';
+import React, { useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { logout, signin } from "../features/session/sessionSlice";
+import SignupForm from '../features/session/SignupForm';
 import './Home.css';
 
-const HomePage: React.FC = () => {
+const sessionSelector = state => state.session
+
+const username = createSelector(
+  sessionSelector,
+  session => {
+    return session.username
+  }
+)
+const mapState = state => ({
+  username: username(state)
+})
+
+const HomePage: React.FC = ({ username }) => {
+
+  const dispatch = useDispatch()
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+
+  const buttonLogout = () => {
+    dispatch(logout())
+  }
+
+  const submit = () => {
+    dispatch(signin(email, password))
+  }
+
+  const connectedInfo = username ? (
+    <div>
+      <h1>Nom utilisateur: {username}</h1>
+      <IonButton onClick={buttonLogout}>
+        Logout
+        </IonButton>
+    </div>) : null;
+
   return (
     <IonPage>
       <IonHeader>
@@ -33,44 +54,26 @@ const HomePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonCard className="welcome-card">
-          <img src="/assets/shapes.svg" alt=""/>
-          <IonCardHeader>
-            <IonCardSubtitle>Get Started</IonCardSubtitle>
-            <IonCardTitle>Welcome to Ionic</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <p>
-              Now that your app has been created, you'll want to start building out features and
-              components. Check out some of the resources below for next steps.
-            </p>
-          </IonCardContent>
-        </IonCard>
+        {connectedInfo}
+        <h1>Connect</h1>
+        <form onSubmit={(e) => { e.preventDefault(); submit() }}>
 
-        <IonList lines="none">
-          <IonListHeader>
-            <IonLabel>Resources</IonLabel>
-          </IonListHeader>
-          <IonItem href="https://ionicframework.com/docs/" target="_blank">
-            <IonIcon slot="start" color="medium" icon={book} />
-            <IonLabel>Ionic Documentation</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/building/scaffolding" target="_blank">
-            <IonIcon slot="start" color="medium" icon={build} />
-            <IonLabel>Scaffold Out Your App</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/layout/structure" target="_blank">
-            <IonIcon slot="start" color="medium" icon={grid} />
-            <IonLabel>Change Your App Layout</IonLabel>
-          </IonItem>
-          <IonItem href="https://ionicframework.com/docs/theming/basics" target="_blank">
-            <IonIcon slot="start" color="medium" icon={colorFill} />
-            <IonLabel>Theme Your App</IonLabel>
-          </IonItem>
-        </IonList>
+          <IonList>
+            <IonItem>
+              <IonLabel>Email</IonLabel>
+              <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail(e.target.value)} />
+            </IonItem>
+            <IonItem>
+              <IonLabel>Password</IonLabel>
+              <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword(e.target.value)} />
+            </IonItem>
+          </IonList>
+          <IonButton expand={true} type='submit'>Log in</IonButton>
+        </form>
+        <SignupForm />
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 
-export default HomePage;
+export default connect(mapState)(HomePage);

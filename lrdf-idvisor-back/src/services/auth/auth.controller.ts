@@ -1,6 +1,7 @@
 import { compare, genSalt, hash } from 'bcryptjs';
 import express from "express";
 import { getRepository } from 'typeorm';
+import { isAdmin } from "../../middleware/auth";
 import modelValidatorMiddleware from "../../middleware/model.validator";
 import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
@@ -21,6 +22,13 @@ class AuthController implements Controller {
         this.router.post(`${this.path}/register`, modelValidatorMiddleware(RegisteringUser), this.register);
         this.router.post(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
         this.router.get(`${this.path}/logout`, this.loggout);
+        this.router.get(`${this.path}/test`, isAdmin, this.testAdmin);
+    }
+
+    private testAdmin = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        console.log("In testAdmin");
+
+        response.send(200)
     }
 
     private register = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
