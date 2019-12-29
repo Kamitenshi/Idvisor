@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { IonButton, IonInput, IonItem, IonLabel, IonList } from '@ionic/react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,14 +16,14 @@ const SignupForm: React.FC = () => {
         <IonList>
             <IonItem>
                 <IonLabel>Email</IonLabel>
-                <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail(e.target.value)} />
+                <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>Password</IonLabel>
-                <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword(e.target.value)} />
+                <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)} />
             </IonItem>
         </IonList>
-        <IonButton expand={true} type='submit'>Signup</IonButton>
+        <IonButton type='submit'>Signup</IonButton>
     </form>)
 }
 

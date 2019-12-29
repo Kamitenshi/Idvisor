@@ -47,7 +47,7 @@ const createUrl = (service: string, action?: string) => {
     return action ? url + '/' + action : url
 }
 
-const postFormData = async (service: string, action: string, body) => {
+const postFormData = async (service: string, action: string, body: any) => {
     const url = createUrl(service, action)
     try {
 

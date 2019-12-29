@@ -1,13 +1,17 @@
-// @ts-nocheck
 import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { createSelector } from '@reduxjs/toolkit';
 import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { RootState } from '../app/rootReducer';
 import { logout, signin } from "../features/session/sessionSlice";
 import SignupForm from '../features/session/SignupForm';
 import './Home.css';
 
-const sessionSelector = state => state.session
+interface HomeInterface {
+  username: string
+}
+
+const sessionSelector = (state: RootState) => state.session
 
 const username = createSelector(
   sessionSelector,
@@ -15,11 +19,11 @@ const username = createSelector(
     return session.username
   }
 )
-const mapState = state => ({
+const mapState = (state: RootState) => ({
   username: username(state)
 })
 
-const HomePage: React.FC = ({ username }) => {
+const HomePage: React.FC<HomeInterface> = ({ username }) => {
 
   const dispatch = useDispatch()
 
@@ -28,7 +32,7 @@ const HomePage: React.FC = ({ username }) => {
 
 
   const buttonLogout = () => {
-    dispatch(logout())
+    dispatch(logout)
   }
 
   const submit = () => {
@@ -61,14 +65,14 @@ const HomePage: React.FC = ({ username }) => {
           <IonList>
             <IonItem>
               <IonLabel>Email</IonLabel>
-              <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail(e.target.value)} />
+              <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
               <IonLabel>Password</IonLabel>
-              <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword(e.target.value)} />
+              <IonInput name="password" type="password" value={password} onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)} />
             </IonItem>
           </IonList>
-          <IonButton expand={true} type='submit'>Log in</IonButton>
+          <IonButton type='submit'>Log in</IonButton>
         </form>
         <SignupForm />
       </IonContent>
