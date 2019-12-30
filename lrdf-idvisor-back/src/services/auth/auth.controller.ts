@@ -61,7 +61,7 @@ class AuthController implements Controller {
                 const passwordMatch = await compare(userData.password, user.password);
                 if (passwordMatch) {
                     createToken(response, user.role);
-                    HttpSuccess.send(response, `Session created - user: ${userData.email}`);
+                    HttpSuccess.send(response, userData.username);
                 }
                 else {
                     next(new HttpException(403, "Wrong credentials"));

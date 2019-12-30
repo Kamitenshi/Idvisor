@@ -57,16 +57,19 @@ const postFormData = async (service: string, action: string, body: any) => {
 
 export const signin = (
     email: string,
-    password: string
+    password: string,
+    redirect: () => void,
+    setError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
         const response = await postFormData('auth', 'login', { email, password })
         console.log("Signin worked: " + JSON.stringify(response))
-        const user = { username: 'test', email }
+        const user = { username: response.data.responseMessage, email }
         dispatch(initSession(user))
+        redirect()
     }
     catch (err) {
-        console.log("An error has occured: " + err);
+        setError("Les identifiants ne sont pas valides")
     }
 }
 
@@ -74,10 +77,11 @@ export const signupStudent = (
     username: string,
     email: string,
     password: string,
+    redirect: () => void,
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     const role = 'student'
-    dispatch(signup(username, role, email, password, setServerError))
+    dispatch(signup(username, role, email, password, redirect, setServerError))
 }
 
 export const signup = (
@@ -85,12 +89,14 @@ export const signup = (
     role: string,
     email: string,
     password: string,
+    redirect: () => void,
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        const response = await postFormData('auth', 'register', { email, password, role })
+        const response = await postFormData('auth', 'register', { username, email, password, role })
         const user = { username, email }
         dispatch(initSession(user))
+        redirect()
     }
     catch (e) {
         setServerError("Cet email est déjà associé à un compte")

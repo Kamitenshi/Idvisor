@@ -20,6 +20,7 @@ import Menu from './components/Menu';
 import { AppPage } from './declarations';
 import Home from './pages/Home';
 import List from './pages/List';
+import Profile from './pages/Profile';
 import Sign from './pages/Sign';
 /* Theme variables */
 import './theme/variables.css';
@@ -50,7 +51,8 @@ const App: React.FC = () => (
         <IonRouterOutlet id="main">
           <Route path="/home" component={Home} exact={true} />
           <Route path="/home/list" component={List} exact={true} />
-          <Route path="/sign" component={Sign} exact={true} />
+          <Route path="/sign/:type" component={Sign} />
+          <Route path="/profile" component={Profile} />
           <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
         </IonRouterOutlet>
       </IonSplitPane>

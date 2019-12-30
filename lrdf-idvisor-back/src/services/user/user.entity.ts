@@ -1,37 +1,43 @@
-import { IsEmail, IsIn, IsString } from 'class-validator';
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { IsEmail, IsIn, IsString } from 'class-validator'
+import { Column, Entity, PrimaryColumn } from "typeorm"
 
-export type Role = "admin" | "student" | "advisor";
+export type Role = "admin" | "student" | "advisor"
 
 @Entity()
 class User {
   @PrimaryColumn()
-  public email!: string;
+  public email!: string
 
   @Column()
-  public role!: Role;
+  public username!: string
 
   @Column()
-  public password!: string;
+  public role!: Role
+
+  @Column()
+  public password!: string
 }
 
 export class RegisteringUser {
   @IsEmail()
-  public email!: string;
-
-  @IsIn(['admin', 'advisor', 'student'])
-  public role!: Role;
+  public email!: string
 
   @IsString()
-  public password!: string;
+  public username!: string
+
+  @IsIn(['admin', 'advisor', 'student'])
+  public role!: Role
+
+  @IsString()
+  public password!: string
 }
 
 export class LoggingUser {
   @IsEmail()
-  public email!: string;
+  public email!: string
 
   @IsString()
-  public password!: string;
+  public password!: string
 }
 
-export default User;
+export default User

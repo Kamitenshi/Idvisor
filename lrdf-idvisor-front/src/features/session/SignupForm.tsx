@@ -1,9 +1,11 @@
 import { IonButton, IonInput, IonItem, IonLabel, IonList, IonText } from '@ionic/react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import { signupStudent } from "./sessionSlice";
 
-const SignupForm: React.FC = () => {
+const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
 
     const dispatch = useDispatch()
 
@@ -19,9 +21,13 @@ const SignupForm: React.FC = () => {
         }
     }
 
+    const redirect = () => {
+        history.push('/profile')
+    }
+
     const submit = () => {
         if (username && email && password && confirmationPassword) {
-            dispatch(signupStudent(username, email, password, setError))
+            dispatch(signupStudent(username, email, password, redirect, setError))
         }
         else {
             setError('Tous les champs ne sont pas remplis')
@@ -59,4 +65,4 @@ const SignupForm: React.FC = () => {
     </form>)
 }
 
-export default SignupForm
+export default withRouter(SignupForm)
