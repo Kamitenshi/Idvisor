@@ -69,7 +69,7 @@ export const signin = (
         redirect()
     }
     catch (err) {
-        setError("Les identifiants ne sont pas valides")
+        setError("Les identifiants ne sont pas valides") //TODO: error message should display when backend is down
     }
 }
 
@@ -93,13 +93,13 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        const response = await postFormData('auth', 'register', { username, email, password, role })
+        await postFormData('auth', 'register', { username, email, password, role })
         const user = { username, email }
         dispatch(initSession(user))
         redirect()
     }
     catch (e) {
-        setServerError("Cet email est déjà associé à un compte")
+        setServerError("Cet email est déjà associé à un compte") //TODO: error message should display when backend is down
     }
 }
 

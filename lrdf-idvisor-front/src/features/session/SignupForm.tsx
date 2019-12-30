@@ -26,12 +26,7 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const submit = () => {
-        if (username && email && password && confirmationPassword) {
-            dispatch(signupStudent(username, email, password, redirect, setError))
-        }
-        else {
-            setError('Tous les champs ne sont pas remplis')
-        }
+        dispatch(signupStudent(username, email, password, redirect, setError))
     }
 
     return (<form onSubmit={(e) => { e.preventDefault(); submit() }}>
@@ -39,21 +34,23 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
         <IonList>
             <IonItem>
                 <IonLabel>Nom utilisateur</IonLabel>
-                <IonInput name="username" type="text" value={username} onIonChange={(e) => setUsername((e.target as HTMLInputElement).value)} />
+                <IonInput name="username" type="text" value={username} autofocus={true} required={true}
+                    onIonChange={(e) => setUsername((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>E-mail</IonLabel>
-                <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
+                <IonInput name="email" type="email" value={email} required={true}
+                    onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>Mot de passe</IonLabel>
-                <IonInput name="password" type="password" value={password}
+                <IonInput name="password" type="password" value={password} clearOnEdit={false} required={true}
                     onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)}
                     onIonBlur={(e) => checkPassword((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>Confirmer le mot de passe</IonLabel>
-                <IonInput name="confirmationPassword" type="password" value={confirmationPassword}
+                <IonInput name="confirmationPassword" type="password" value={confirmationPassword} clearOnEdit={false} required={true}
                     onIonChange={(e) => setConfirmationPassword((e.target as HTMLInputElement).value)}
                     onIonBlur={(e) => checkPassword((e.target as HTMLInputElement).value)} />
             </IonItem>

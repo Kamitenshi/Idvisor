@@ -30,11 +30,12 @@ const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
             <IonList>
                 <IonItem>
                     <IonLabel>E-mail</IonLabel>
-                    <IonInput name="email" type="email" value={email} onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
+                    <IonInput name="email" type="email" value={email} autofocus={true} required={true}
+                        onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
                 </IonItem>
                 <IonItem>
                     <IonLabel>Mot de passe</IonLabel>
-                    <IonInput name="password" type="password" value={password}
+                    <IonInput name="password" type="password" value={password} clearOnEdit={false} required={true}
                         onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)}
                     />
                 </IonItem>
