@@ -49,15 +49,9 @@ const createUrl = (service: string, action?: string) => {
 
 const postFormData = async (service: string, action: string, body: any) => {
     const url = createUrl(service, action)
-    try {
-
-        const result = axios.post(url, body)
-        console.log("Request successfully created: " + JSON.stringify(body)) // TODO: remove
-        return result
-    }
-    catch (err) {
-        console.error("An error has occured: " + err) // TODO: manage properly errors
-    }
+    const result = axios.post(url, body)
+    console.log("Request successfully created: " + JSON.stringify(body)) // TODO: remove
+    return result
 
 }
 
@@ -76,15 +70,31 @@ export const signin = (
     }
 }
 
-export const signup = (
+export const signupStudent = (
+    username: string,
     email: string,
-    password: string
+    password: string,
+    setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
-    const role = 'admin'
-    const response = await postFormData('auth', 'register', { email, password, role })
-    const user = { username: 'test', email }
-    dispatch(initSession(user))
+    const role = 'student'
+    dispatch(signup(username, role, email, password, setServerError))
+}
 
+export const signup = (
+    username: string,
+    role: string,
+    email: string,
+    password: string,
+    setServerError: (msg: string) => void
+): AppThunk => async dispatch => {
+    try {
+        const response = await postFormData('auth', 'register', { email, password, role })
+        const user = { username, email }
+        dispatch(initSession(user))
+    }
+    catch (e) {
+        setServerError("Cet email est déjà associé à un compte")
+    }
 }
 
 export const {
