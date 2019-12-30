@@ -72,7 +72,7 @@ export class HttpSuccess {
         return createSendFunction<SuccessStatus>()(response, 200, message);
     }
 
-    public static send(response: express.Response, message: string) {
-        this.sendCallback(response, message)("");
+    public static send(response: express.Response, message: string, result?: string) {
+        this.sendCallback(response, message)(result);
     }
 }

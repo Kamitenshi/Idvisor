@@ -64,7 +64,7 @@ export const signin = (
     try {
         const response = await postFormData('auth', 'login', { email, password })
         console.log("Signin worked: " + JSON.stringify(response))
-        const user = { username: response.data.responseMessage, email }
+        const user = { username: response.data.result, email }
         dispatch(initSession(user))
         redirect()
     }
