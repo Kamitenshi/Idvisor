@@ -20,7 +20,7 @@ class AuthController implements Controller {
 
     private initializeRoutes() {
         this.router.post(`${this.path}/register`, modelValidatorMiddleware(RegisteringUser), this.register);
-        this.router.post(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
+        this.router.get(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
         this.router.get(`${this.path}/logout`, this.loggout);
         this.router.get(`${this.path}/test`, isAdmin, this.testAdmin);
     }
@@ -54,7 +54,7 @@ class AuthController implements Controller {
     }
 
     private loggingIn = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        const userData: User = request.body;
+        const userData: User = request.query;
         try {
             const user = await this.userRepository.findOne({ email: userData.email });
             if (user) {

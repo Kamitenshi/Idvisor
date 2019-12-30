@@ -4,8 +4,9 @@ import * as express from 'express';
 import { HttpException } from '../utils/HttpReply';
 
 function modelValidatorMiddleware<T>(type: any): express.RequestHandler {
-    return (req, res, next) => {
-        validate(plainToClass(type, req.body))
+    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const data = req.method === "POST" ? req.body : req.query
+        validate(plainToClass(type, data))
             .then((errors: ValidationError[]) => {
                 if (errors.length > 0) {
                     const message = errors.map((error: ValidationError) => Object.values(error.constraints)).join(', ');

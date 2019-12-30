@@ -17,12 +17,7 @@ const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const submit = () => {
-        if (email && password) {
-            dispatch(signin(email, password, redirect, setError))
-        }
-        else {
-            setError("Remplir l'ensemble des champs")
-        }
+        dispatch(signin(email, password, redirect, setError))
     }
     return (
         <form onSubmit={(e) => { e.preventDefault(); submit() }}>

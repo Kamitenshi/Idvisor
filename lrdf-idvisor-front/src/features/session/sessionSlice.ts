@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from 'axios';
 import { AppThunk } from "../../app/rootReducer";
+import { getData, postData } from "../../utils/httpclient";
 
 interface User {
     username: string,
@@ -38,22 +38,6 @@ const sessionSlice = createSlice({
     }
 })
 
-const createUrl = (service: string, action?: string) => {
-    const protocol = "http"
-    const domain = "localhost"
-    const port = 4000
-    const url = protocol + '://' + domain + ':' + port + '/' + service
-
-    return action ? url + '/' + action : url
-}
-
-const postFormData = async (service: string, action: string, body: any) => {
-    const url = createUrl(service, action)
-    const result = axios.post(url, body)
-    console.log("Request successfully created: " + JSON.stringify(body)) // TODO: remove
-    return result
-
-}
 
 export const signin = (
     email: string,
@@ -62,7 +46,7 @@ export const signin = (
     setError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        const response = await postFormData('auth', 'login', { email, password })
+        const response = await getData('auth', 'login', { email, password })
         console.log("Signin worked: " + JSON.stringify(response))
         const user = { username: response.data.result, email }
         dispatch(initSession(user))
@@ -93,7 +77,7 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        await postFormData('auth', 'register', { username, email, password, role })
+        await postData('auth', 'register', { username, email, password, role })
         const user = { username, email }
         dispatch(initSession(user))
         redirect()
