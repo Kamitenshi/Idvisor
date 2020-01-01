@@ -32,6 +32,10 @@ export const postData = async (service: string, action: string, body?: any) => {
     return queryData(transport.post, service, action, body)
 }
 
-export const getData = async (service: string, action: string, body?: any) => {
-    return queryData(transport.get, service, action, { params: body })
+export const getData = async (service: string, action: string, params?: any) => {
+    return queryData(transport.get, service, action, { params })
+}
+
+export const deleteData = async (service: string, action: string, params?: any) => {
+    return queryData(transport.delete, service, action, { params })
 }
