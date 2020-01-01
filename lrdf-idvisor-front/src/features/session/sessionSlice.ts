@@ -39,10 +39,9 @@ const sessionSlice = createSlice({
     }
 })
 
-export const logout = (redirect: () => void): AppThunk => async dispatch => {
+export const logout = (): AppThunk => async dispatch => {
     const response = await getData('auth', 'logout')
     dispatch(clearSession())
-    redirect()
 }
 
 

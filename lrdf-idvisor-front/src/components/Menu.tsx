@@ -19,7 +19,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, history }) => {
   }
 
   const buttonLogout = () => {
-    dispatch(logout(redirect))
+    dispatch(logout())
   }
 
   return (
@@ -42,7 +42,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, history }) => {
             );
           })}
           <IonMenuToggle key={appPages.length} autoHide={false}>
-            <IonItem onClick={buttonLogout}>
+            <IonItem onClick={buttonLogout} href={'/'} routerDirection="none">
               <IonIcon slot="start" icon={logOut} />
               <IonLabel>Se déconnecter</IonLabel>
             </IonItem>
