@@ -26,7 +26,10 @@ class App {
 
     private initializeMiddlewares() {
         this.app.use(morgan("dev"));
-        this.app.use(cors());
+        this.app.use(cors({
+            credentials: true,
+            origin: 'http://localhost:3000' //TODO: set in environment variable
+        }));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
