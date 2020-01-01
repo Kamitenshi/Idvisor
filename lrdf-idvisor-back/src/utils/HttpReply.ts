@@ -43,7 +43,7 @@ class HttpReply {
         }
     }
 
-    private static sendResponse(status: Status, responseMessage: string, result: string) {
+    private static sendResponse(status: Status, responseMessage: string, result: any) {
         return (response: express.Response) => {
             if (isSuccessStatus(status) || env.isDevelopment) response.status(status).send({ status, responseMessage, result });
             else response.status(status).send({ status, responseMessage });
@@ -72,7 +72,7 @@ export class HttpSuccess {
         return createSendFunction<SuccessStatus>()(response, 200, message);
     }
 
-    public static send(response: express.Response, message: string, result?: string) {
+    public static send(response: express.Response, message: string, result?: any) {
         this.sendCallback(response, message)(result);
     }
 }

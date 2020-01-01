@@ -1,9 +1,11 @@
 import { Action, combineReducers } from "@reduxjs/toolkit";
 import { ThunkAction } from "redux-thunk";
+import studentReducer from "../features/profile/profileSlice";
 import sessionReducer from "../features/session/sessionSlice";
 
 const rootReducer = combineReducers({
-    session: sessionReducer
+    student: studentReducer,
+    session: sessionReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

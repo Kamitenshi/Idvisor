@@ -7,7 +7,7 @@ export const transport = axios.create({
 interface Response {
     status: number,
     responseMessage: string,
-    result: string
+    result: any
 }
 
 const createUrl = (service: string, action?: string) => {
