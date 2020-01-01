@@ -12,31 +12,38 @@ type Authentication = {
 } & User
 
 type CurrentSession = {
-    jwt: string
+    isAuthenticated: boolean
 } & User
 
 let initialState: CurrentSession = {
     username: '',
     email: '',
-    jwt: '',
+    isAuthenticated: false,
 }
 
 const sessionSlice = createSlice({
     name: ('sessionSlice'),
     initialState,
     reducers: {
-        logout(state, _) {
+        clearSession(state) {
             state.username = ''
             state.email = ''
-            state.jwt = ''
+            state.isAuthenticated = false
         },
         initSession(state, action: PayloadAction<User>) {
             const { username, email } = action.payload
             state.username = username
             state.email = email
+            state.isAuthenticated = true
         }
     }
 })
+
+export const logout = (redirect: () => void): AppThunk => async dispatch => {
+    const response = await getData('auth', 'logout')
+    dispatch(clearSession())
+    redirect()
+}
 
 
 export const signin = (
@@ -88,7 +95,7 @@ export const signup = (
 }
 
 export const {
-    logout,
+    clearSession,
     initSession
 } = sessionSlice.actions
 
