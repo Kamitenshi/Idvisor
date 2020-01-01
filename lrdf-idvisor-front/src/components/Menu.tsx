@@ -14,10 +14,6 @@ interface MenuProps extends RouteComponentProps {
 const Menu: React.FunctionComponent<MenuProps> = ({ appPages, history }) => {
   const dispatch = useDispatch()
 
-  const redirect = () => {
-    history.push('/')
-  }
-
   const buttonLogout = () => {
     dispatch(logout())
   }
