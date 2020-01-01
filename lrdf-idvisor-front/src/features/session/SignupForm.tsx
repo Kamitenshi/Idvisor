@@ -35,23 +35,23 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
             <IonItem>
                 <IonLabel>Nom utilisateur</IonLabel>
                 <IonInput name="username" type="text" value={username} autofocus={true} required={true}
-                    onIonChange={(e) => setUsername((e.target as HTMLInputElement).value)} />
+                    onIonInput={(e) => setUsername((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>E-mail</IonLabel>
                 <IonInput name="email" type="email" value={email} required={true}
-                    onIonChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
+                    onIonInput={(e) => setEmail((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>Mot de passe</IonLabel>
                 <IonInput name="password" type="password" value={password} clearOnEdit={false} required={true}
-                    onIonChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+                    onIonInput={(e) => setPassword((e.target as HTMLInputElement).value)}
                     onIonBlur={(e) => checkPassword((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonItem>
                 <IonLabel>Confirmer le mot de passe</IonLabel>
                 <IonInput name="confirmationPassword" type="password" value={confirmationPassword} clearOnEdit={false} required={true}
-                    onIonChange={(e) => setConfirmationPassword((e.target as HTMLInputElement).value)}
+                    onIonInput={(e) => setConfirmationPassword((e.target as HTMLInputElement).value)}
                     onIonBlur={(e) => checkPassword((e.target as HTMLInputElement).value)} />
             </IonItem>
             <IonText color='danger'>
