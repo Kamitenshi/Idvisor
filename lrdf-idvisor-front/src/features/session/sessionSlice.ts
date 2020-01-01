@@ -4,7 +4,7 @@ import { getData, postData } from "../../utils/httpclient";
 
 export type Role = 'admin' | 'advisor' | 'student'
 
-interface User {
+export interface User {
     username: string,
     email: string,
     role: Role
@@ -88,7 +88,7 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        await postData('auth', 'register', { username, email, password, role })
+        await postData('auth', 'register/student', { username, email, password, role })
         const user = { username, email, role }
         dispatch(initSession(user))
         redirect()
