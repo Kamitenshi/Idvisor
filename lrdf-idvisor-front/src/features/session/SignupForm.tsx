@@ -26,7 +26,9 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const submit = () => {
-        dispatch(signupStudent(username, email, password, redirect, setError))
+        if (confirmationPassword && confirmationPassword !== password) {
+            dispatch(signupStudent(username, email, password, redirect, setError))
+        }
     }
 
     return (<form onSubmit={(e) => { e.preventDefault(); submit() }}>
