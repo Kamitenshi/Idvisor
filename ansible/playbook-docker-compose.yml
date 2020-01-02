@@ -1,0 +1,22 @@
+###########################################################################
+# DEPLOY IMAGE
+###########################################################################
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+
+    - name: Tear down existing services
+      docker_compose:
+        remove_orphans: yes
+        project_src: ~/SIGL/NLPF/Idvisor/dev-database/
+        state: absent
+
+    # Create and start services
+    - name: Create and start services
+      docker_compose:
+        project_src: ~/SIGL/NLPF/Idvisor/dev-database/
+      register: output
