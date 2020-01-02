@@ -40,7 +40,7 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
                 </>)
         }
 
-        return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', 'Action'], users, apply)
+        return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], users, apply)
     }
 
     const refreshUserList = () => {
