@@ -1,5 +1,5 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
-import { home } from 'ionicons/icons'
+import { home, settings } from 'ionicons/icons'
 import React from 'react'
 import { AppPage } from '../declarations'
 import { capitalize } from '../utils/string'
@@ -15,6 +15,11 @@ const PageWithMenu: React.FC<PageInterface> = ({ title, children }) => {
             title: 'Home',
             url: '/home',
             icon: home
+        },
+        {
+            title: 'Settings',
+            url: '/settings',
+            icon: settings
         }
     ];
     return (

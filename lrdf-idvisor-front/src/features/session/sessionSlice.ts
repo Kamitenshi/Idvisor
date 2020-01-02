@@ -7,21 +7,26 @@ export type Role = 'admin' | 'advisor' | 'student'
 export interface User {
     username: string,
     email: string,
+}
+
+interface UserSession {
+    user: User,
     role: Role
 }
 
-type Authentication = {
-    password: string
-} & User
-
 type CurrentSession = {
+    userSession: UserSession
     isAuthenticated: boolean
-} & User
+}
 
 let initialState: CurrentSession = {
-    username: '',
-    email: '',
-    role: 'student',
+    userSession: {
+        user: {
+            username: '',
+            email: '',
+        },
+        role: 'student'
+    },
     isAuthenticated: false,
 }
 
@@ -30,15 +35,15 @@ const sessionSlice = createSlice({
     initialState,
     reducers: {
         clearSession(state) {
-            state.username = ''
-            state.email = ''
+            state.userSession.user.username = ''
+            state.userSession.user.email = ''
             state.isAuthenticated = false
         },
-        initSession(state, action: PayloadAction<User>) {
-            const { username, email, role } = action.payload
-            state.role = role
-            state.username = username
-            state.email = email
+        initSession(state, action: PayloadAction<UserSession>) {
+            const { user, role } = action.payload
+            state.userSession.role = role
+            state.userSession.user.username = user.username
+            state.userSession.user.email = user.email
             state.isAuthenticated = true
         }
     }
@@ -59,7 +64,7 @@ export const signin = (
     try {
         const response = await getData('auth', 'login', { email, password })
         const { username, role } = response.data.result
-        const user = { username, email, role }
+        const user = { user: { username, email }, role }
         dispatch(initSession(user))
         redirect()
     }
@@ -89,7 +94,7 @@ export const signup = (
 ): AppThunk => async dispatch => {
     try {
         await postData('auth', 'register/student', { username, email, password, role })
-        const user = { username, email, role }
+        const user = { user: { username, email }, role }
         dispatch(initSession(user))
         redirect()
     }
@@ -98,8 +103,27 @@ export const signup = (
     }
 }
 
-export const getUsername = (state: RootState) => state.session.username
-export const getRole = (state: RootState) => state.session.role
+export const modifyField = (
+    newValue: string,
+    field: string,
+    currentPassword: string,
+    setServerError: (msg: string) => void
+): AppThunk => async dispatch => {
+    try {
+        const result = await postData('user', 'modify', { field: newValue })
+        const { username, email, role } = result.data.result
+        const user = { user: { username, email }, role }
+        dispatch(initSession(user))
+    }
+    catch (e) {
+        setServerError('Mot de passe invalide')
+    }
+}
+
+export const getUsername = (state: RootState) => state.session.userSession.user.username
+export const getRole = (state: RootState) => state.session.userSession.role
+export const getEmail = (state: RootState) => state.session.userSession.user.email
+export const getUser = (state: RootState) => state.session.userSession.user
 
 export const {
     clearSession,

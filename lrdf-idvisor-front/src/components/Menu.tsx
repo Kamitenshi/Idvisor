@@ -11,7 +11,7 @@ interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
 }
 
-const Menu: React.FunctionComponent<MenuProps> = ({ appPages, history }) => {
+const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => {
   const dispatch = useDispatch()
 
   const buttonLogout = () => {
