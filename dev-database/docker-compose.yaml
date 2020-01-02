@@ -16,6 +16,22 @@ services:
     networks:
     - postgres
     env_file: ../lrdf-idvisor-back/.env
+
+  front:
+    container_name: front
+    image: leoprivate/idvisor-front
+    ports:
+    - "3000:3000"
+    networks:
+    - postgres
+
+  back:
+    container_name: back
+    image: leoprivate/idvisor-back
+    ports:
+    - "4000:4000"
+    networks:
+    - postgres
  
 networks:
   postgres:

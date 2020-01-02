@@ -1,0 +1,5 @@
+to change the default port (8080) go into /etc/default/jenkins and replace HTTP_PORT with the port number
+you want to use
+
+then
+$ sudo service jenkins restart
