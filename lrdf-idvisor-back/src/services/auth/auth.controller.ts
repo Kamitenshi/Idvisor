@@ -7,7 +7,7 @@ import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from "../../utils/HttpReply";
 import { createToken, deleteToken } from '../../utils/jwt';
-import User, { LoggingUser, RegisteringUser } from "../user/user.entity";
+import User, { LoggingUser, RegisteringUser, Role } from "../user/user.entity";
 
 class AuthController implements Controller {
     public path = '/auth';
@@ -19,7 +19,9 @@ class AuthController implements Controller {
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/register`, modelValidatorMiddleware(RegisteringUser), this.register);
+        this.router.post(`${this.path}/register/admin`, isAdmin, modelValidatorMiddleware(RegisteringUser), this.registerAdmin);
+        this.router.post(`${this.path}/register/advisor`, isAdmin, modelValidatorMiddleware(RegisteringUser), this.registerAdvisor);
+        this.router.post(`${this.path}/register/student`, modelValidatorMiddleware(RegisteringUser), this.registerStudent);
         this.router.get(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
         this.router.get(`${this.path}/logout`, this.loggout);
         this.router.get(`${this.path}/test/isAdmin`, isAdmin, this.testAdmin);
@@ -38,8 +40,18 @@ class AuthController implements Controller {
         response.send(200)
     }
 
-    private register = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        const userData: User = request.body;
+    private registerAdmin = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        this.register(request, response, next, 'admin')
+    }
+    private registerStudent = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        this.register(request, response, next, 'student')
+    }
+    private registerAdvisor = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        this.register(request, response, next, 'advisor')
+    }
+
+    private register = async (request: express.Request, response: express.Response, next: express.NextFunction, role: Role) => {
+        const userData: User = { ...request.body, role };
         try {
             const found = await this.userRepository.findOne({ email: userData.email })
             if (found === undefined) {

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../app/rootReducer'
 import PageWithMenu from '../components/PageWithMenu'
+import AdminProfile from '../features/profile/AdminProfile'
 import StudentProfile from '../features/profile/StudentProfile'
 import { getRole, getUsername, Role } from '../features/session/sessionSlice'
 
@@ -14,6 +15,8 @@ const Profile: React.FC<ProfileInterface> = ({ username, role }) => {
     const content = () => {
         if (role === 'student') {
             return <StudentProfile />
+        } else if (role === 'admin') {
+            return <AdminProfile />
         }
     }
     return (

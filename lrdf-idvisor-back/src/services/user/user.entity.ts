@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsString } from 'class-validator'
+import { IsEmail, IsString } from 'class-validator'
 import { Column, Entity, PrimaryColumn } from "typeorm"
 
 export type Role = "admin" | "student" | "advisor"
@@ -24,9 +24,6 @@ export class RegisteringUser {
 
   @IsString()
   public username!: string
-
-  @IsIn(['admin', 'advisor', 'student'])
-  public role!: Role
 
   @IsString()
   public password!: string

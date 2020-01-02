@@ -20,10 +20,13 @@ const createUrl = (service: string, action?: string) => {
 }
 
 const queryData = async (method: (url: string, data?: any, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<Response>>, service: string, action: string, body?: any) => {
-    console.log(JSON.stringify(body))
     const url = createUrl(service, action)
     const result = await method(url, body)
-    console.log("Request successfully created: " + JSON.stringify(body)) // TODO: remove
+    console.log("Request successfully sent: " + JSON.stringify({
+        url,
+        body,
+        result
+    })) // TODO: remove
     return result
 
 }
@@ -32,6 +35,10 @@ export const postData = async (service: string, action: string, body?: any) => {
     return queryData(transport.post, service, action, body)
 }
 
-export const getData = async (service: string, action: string, body?: any) => {
-    return queryData(transport.get, service, action, { params: body })
+export const getData = async (service: string, action: string, params?: any) => {
+    return queryData(transport.get, service, action, { params })
+}
+
+export const deleteData = async (service: string, action: string, params?: any) => {
+    return queryData(transport.delete, service, action, { params })
 }
