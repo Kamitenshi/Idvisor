@@ -1,9 +1,11 @@
 import { IonButton, IonInput, IonItem, IonLabel, IonList } from '@ionic/react'
+import { User } from 'lrdf-idvisor-model'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { RootState } from '../../app/rootReducer'
 import PageWithMenu from '../../components/PageWithMenu'
-import { getUser, User } from './sessionSlice'
+import { getUser } from './sessionSlice'
 
 interface SettingsPage {
     user: User
@@ -12,7 +14,6 @@ interface SettingsPage {
 type TextFieldTypes = 'password' | 'email' | 'text'
 
 const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
-
     const { email, username } = user
 
     const [newValue, setNewValue] = useState('')
@@ -44,7 +45,11 @@ const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
         }
     }
 
+    const redirect = () => {
+        console.log("coucou");
 
+        return <Redirect to='/' />
+    }
     return (
         <PageWithMenu title='Settings'>
             <IonList>
@@ -60,6 +65,7 @@ const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
                     <IonLabel>Mot de passe</IonLabel>
                     <IonButton onClick={displayModifyField("mot de passe", 'password', 'password')}>Modifier</IonButton>
                 </IonItem>
+                <IonItem onClick={redirect}>Test</IonItem>
             </IonList>
             {newInput}
         </PageWithMenu>
