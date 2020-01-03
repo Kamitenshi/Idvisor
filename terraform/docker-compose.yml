@@ -1,0 +1,38 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+    - '5432:5432'
+    networks:
+    - postgres
+ 
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+    - "8080:80"
+    networks:
+    - postgres
+    env_file: .env
+
+  front:
+    container_name: front
+    image: leoprivate/idvisor-front
+    ports:
+    - "3000:3000"
+    networks:
+    - postgres
+
+  back:
+    container_name: back
+    image: leoprivate/idvisor-back
+    ports:
+    - "4000:4000"
+    networks:
+    - postgres
+ 
+networks:
+  postgres:
+  
