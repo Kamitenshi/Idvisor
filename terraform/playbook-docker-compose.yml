@@ -1,0 +1,30 @@
+###########################################################################
+# DEPLOY IMAGE
+###########################################################################
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+
+    - name: Upload docker-compose .env file
+      copy:
+        src: /home/jigsaw/SIGL/NLPF/Idvisor/terraform/.env
+        dest: ~/
+    - name: Upload docker-compose files
+      copy:
+        src: /home/jigsaw/SIGL/NLPF/Idvisor/terraform/docker-compose.yml
+        dest: ~/
+    - name: Tear down existing services
+      docker_compose:
+        remove_orphans: yes
+        project_src: ~/
+        state: absent
+
+    # Create and start services
+    - name: Create and start services
+      docker_compose:
+        project_src: ~/
+      register: output
