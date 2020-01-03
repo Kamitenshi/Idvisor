@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import { isAdmin } from '../../middleware/auth';
 import Controller from '../../utils/controller';
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
-import User from './user.entity';
+import UserDB from './user.entity';
 
 
 
@@ -11,7 +11,7 @@ import User from './user.entity';
 class UserController implements Controller {
     public path = '/user'
     public router = express.Router()
-    private userRepository = getRepository(User)
+    private userRepository = getRepository(UserDB)
 
     constructor() {
         this.initializeRoutes();
@@ -33,7 +33,7 @@ class UserController implements Controller {
     }
 
     private deleteUser = async (request: express.Request, response: express.Response) => {
-        const user: User = request.query
+        const user: UserDB = request.query
         this.userRepository.delete({ email: user.email })
     }
 }

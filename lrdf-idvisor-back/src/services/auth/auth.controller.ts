@@ -7,19 +7,19 @@ import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from "../../utils/HttpReply";
 import { createToken, deleteToken } from '../../utils/jwt';
-import User, { LoggingUser, RegisteringUser, Role } from "../user/user.entity";
+import UserDB, { LoggingUser, RegisteringUser, Role } from "../user/user.entity";
 
 class AuthController implements Controller {
     public path = '/auth';
     public router = express.Router();
-    private userRepository = getRepository(User)
+    private userRepository = getRepository(UserDB)
 
     constructor() {
         this.initializeRoutes();
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/register/admin`, isAdmin, modelValidatorMiddleware(RegisteringUser), this.registerAdmin);
+        this.router.post(`${this.path}/register/admin`, modelValidatorMiddleware(RegisteringUser), this.registerAdmin);
         this.router.post(`${this.path}/register/advisor`, isAdmin, modelValidatorMiddleware(RegisteringUser), this.registerAdvisor);
         this.router.post(`${this.path}/register/student`, modelValidatorMiddleware(RegisteringUser), this.registerStudent);
         this.router.get(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
@@ -51,7 +51,7 @@ class AuthController implements Controller {
     }
 
     private register = async (request: express.Request, response: express.Response, next: express.NextFunction, role: Role) => {
-        const userData: User = { ...request.body, role };
+        const userData: UserDB = { ...request.body, role };
         try {
             const found = await this.userRepository.findOne({ email: userData.email })
             if (found === undefined) {
@@ -73,7 +73,7 @@ class AuthController implements Controller {
     }
 
     private loggingIn = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        const userData: User = request.query;
+        const userData: UserDB = request.query;
         try {
             const user = await this.userRepository.findOne({ email: userData.email });
             if (user) {

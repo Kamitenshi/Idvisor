@@ -1,21 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Role, UserAccount } from "lrdf-idvisor-model";
 import { AppThunk, RootState } from "../../app/rootReducer";
 import { getData, postData } from "../../utils/httpclient";
 
-export type Role = 'admin' | 'advisor' | 'student'
-
-export interface User {
-    username: string,
-    email: string,
-}
-
-interface UserSession {
-    user: User,
-    role: Role
-}
-
 type CurrentSession = {
-    userSession: UserSession
+    userSession: UserAccount
     isAuthenticated: boolean
 }
 
@@ -39,7 +28,7 @@ const sessionSlice = createSlice({
             state.userSession.user.email = ''
             state.isAuthenticated = false
         },
-        initSession(state, action: PayloadAction<UserSession>) {
+        initSession(state, action: PayloadAction<UserAccount>) {
             const { user, role } = action.payload
             state.userSession.role = role
             state.userSession.user.username = user.username
@@ -93,6 +82,7 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
+        console.log('coucou');
         await postData('auth', 'register/student', { username, email, password, role })
         const user = { user: { username, email }, role }
         dispatch(initSession(user))

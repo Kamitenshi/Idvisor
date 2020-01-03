@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm"
 export type Role = "admin" | "student" | "advisor"
 
 @Entity()
-class User {
+class UserDB {
   @PrimaryColumn()
   public email!: string
 
@@ -37,4 +37,4 @@ export class LoggingUser {
   public password!: string
 }
 
-export default User
+export default UserDB

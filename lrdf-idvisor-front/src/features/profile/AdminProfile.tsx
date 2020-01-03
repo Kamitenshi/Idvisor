@@ -1,8 +1,8 @@
 import { IonButton, IonCol, IonRow } from '@ionic/react'
+import { UserAccount } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { deleteData, getData } from '../../utils/httpclient'
 import { mapInGrid } from '../../utils/list'
-import { User } from '../session/sessionSlice'
 
 interface AdminProfilePageInterface { }
 
@@ -19,28 +19,27 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         getAllUsers()
     }, [refresh])
 
-    const deleteUser = (user: User) => {
+    const deleteUser = (user: UserAccount) => {
         return async function apply() {
             deleteData('user', 'delete', user)
         }
     }
 
-    const displayUsers = (users: User[]) => {
-        const apply = (user: User, index: number) => {
+    const displayUsers = (userAccounts: UserAccount[]) => {
+        const apply = (userAccount: UserAccount, index: number) => {
             return (
                 <>
                     <IonRow>
-                        <IonCol>{user.email}</IonCol>
-                        <IonCol>{user.username}</IonCol>
-                        <IonCol>{user.role}</IonCol>
+                        <IonCol>{userAccount.user.email}</IonCol>
+                        <IonCol>{userAccount.user.username}</IonCol>
                         <IonCol>
-                            <IonButton color='danger' onClick={deleteUser(user)}>Supprimer</IonButton>
+                            <IonButton color='danger' onClick={deleteUser(userAccount)}>Supprimer</IonButton>
                         </IonCol>
                     </IonRow>
                 </>)
         }
 
-        return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], users, apply)
+        return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], userAccounts, apply)
     }
 
     const refreshUserList = () => {

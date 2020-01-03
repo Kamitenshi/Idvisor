@@ -1,10 +1,11 @@
+import { Role } from 'lrdf-idvisor-model'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../app/rootReducer'
 import PageWithMenu from '../components/PageWithMenu'
 import AdminProfile from '../features/profile/AdminProfile'
 import StudentProfile from '../features/profile/StudentProfile'
-import { getRole, getUsername, Role } from '../features/session/sessionSlice'
+import { getRole, getUsername } from '../features/session/sessionSlice'
 
 interface ProfileInterface {
     username: string,
