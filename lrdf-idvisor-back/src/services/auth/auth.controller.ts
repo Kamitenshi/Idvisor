@@ -1,7 +1,7 @@
-import { compare, genSalt, hash } from 'bcryptjs';
+import { genSalt, hash } from 'bcryptjs';
 import express from "express";
 import { getRepository } from 'typeorm';
-import { isAdmin, isStudent } from "../../middleware/auth";
+import { isAdmin, isStudent, isUser } from "../../middleware/auth";
 import modelValidatorMiddleware from "../../middleware/model.validator";
 import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
@@ -19,11 +19,12 @@ class AuthController implements Controller {
     }
 
     private initializeRoutes() {
-        this.router.post(`${this.path}/register/admin`, modelValidatorMiddleware(RegisteringUser), this.registerAdmin);
-        this.router.post(`${this.path}/register/advisor`, isAdmin, modelValidatorMiddleware(RegisteringUser), this.registerAdvisor);
+        this.router.post(`${this.path}/register/admin`, modelValidatorMiddleware(RegisteringUser), isAdmin, this.registerAdmin);
+        this.router.post(`${this.path}/register/advisor`, modelValidatorMiddleware(RegisteringUser), isAdmin, this.registerAdvisor);
         this.router.post(`${this.path}/register/student`, modelValidatorMiddleware(RegisteringUser), this.registerStudent);
-        this.router.get(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), this.loggingIn);
+        this.router.get(`${this.path}/login`, modelValidatorMiddleware(LoggingUser), isUser, this.loggingIn);
         this.router.get(`${this.path}/logout`, this.loggout);
+        //TODO: Delete the 2 routes below
         this.router.get(`${this.path}/test/isAdmin`, isAdmin, this.testAdmin);
         this.router.get(`${this.path}/test/isStudent`, isStudent, this.testStudent);
     }
@@ -75,20 +76,9 @@ class AuthController implements Controller {
     private loggingIn = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const userData: UserDB = request.query;
         try {
-            const user = await this.userRepository.findOne({ email: userData.email });
-            if (user) {
-                const passwordMatch = await compare(userData.password, user.password);
-                if (passwordMatch) {
-                    createToken(response, user.role);
-                    HttpSuccess.send(response, `Session created - user: ${userData.email}`, { username: user.username, role: user.role });
-                }
-                else {
-                    next(new HttpException(403, "Wrong credentials"));
-                }
-            }
-            else {
-                next(new HttpException(403, "Wrong credentials"));
-            }
+            const user = await this.userRepository.findOne({ email: userData.email }) as UserDB
+            createToken(response, user.role);
+            HttpSuccess.send(response, `Session created - user: ${userData.email}`, { username: user.username, role: user.role });
         }
         catch (err) {
             next(new HttpException(500, "Could not loggin user", err));

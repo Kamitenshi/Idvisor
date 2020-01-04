@@ -1,5 +1,7 @@
+import { compare } from "bcryptjs";
 import express from 'express';
-import { Role } from '../services/user/user.entity';
+import { getRepository } from 'typeorm';
+import UserDB, { Role } from '../services/user/user.entity';
 import { HttpException } from "../utils/HttpReply";
 import { checkToken } from "../utils/jwt";
 
@@ -29,4 +31,28 @@ export function isAdvisor(request: express.Request, res: express.Response, next:
 
 export function isStudent(request: express.Request, res: express.Response, next: express.NextFunction) {
     isAuthorized('student', request, res, next);
+}
+
+
+export const isUser = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    const userRepository = getRepository(UserDB)
+    const { email, password } = request.query
+    try {
+        const user = await userRepository.findOne({ email })
+        if (user) {
+            const passwordMatch = await compare(password, user.password)
+            if (passwordMatch) {
+                next()
+            }
+            else {
+                next(new HttpException(403, "Wrong credentials"));
+            }
+        }
+        else {
+            next(new HttpException(403, "Wrong credentials"))
+        }
+    }
+    catch (e) {
+        next(new HttpException(500, "Could not patch user informations", e))
+    }
 }
