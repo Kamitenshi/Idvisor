@@ -2,6 +2,7 @@ import { IonButton, IonInput, IonItem, IonLabel, IonList, IonText } from '@ionic
 import { UserData } from 'lrdf-idvisor-model'
 import React, { useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { RootState } from '../app/rootReducer'
 import PageWithMenu from '../components/PageWithMenu'
 import { getUser, modifyField } from '../features/session/sessionSlice'
@@ -12,7 +13,7 @@ interface SettingsPage {
 
 type TextFieldTypes = 'password' | 'email' | 'text'
 
-const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
+const SettingsPage: React.FC<RouteComponentProps & SettingsPage> = ({ user, history }) => {
     const { email, username } = user
 
     const [newValue, setNewValue] = useState('')
@@ -21,9 +22,10 @@ const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
 
 
     const dispatch = useDispatch()
+    const redirect = () => history.push('/profile')
     const handleValidate = (field: string) => {
         console.log("New value: " + newValue);
-        dispatch(modifyField(email, newValue, field, currentPassword, setServerError))
+        dispatch(modifyField(email, newValue, field, currentPassword, redirect, setServerError))
     }
 
 
@@ -32,6 +34,8 @@ const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
     const [name, setName] = useState('')
 
     const modifyEmail = () => { setField('email'); setType('email'); setName('email') }
+    const modifyPassword = () => { setField('password'); setType('password'); setName('password') }
+    const modifyUsername = () => { setField('username'); setType('text'); setName('username') }
 
 
     let inputForm = null
@@ -61,9 +65,11 @@ const SettingsPage: React.FC<SettingsPage> = ({ user }) => {
                 </IonItem>
                 <IonItem>
                     <IonLabel>Nom d'utilisateur actuel : {username}</IonLabel>
+                    <IonButton onClick={modifyUsername}>Modifier</IonButton>
                 </IonItem>
                 <IonItem>
                     <IonLabel>Mot de passe</IonLabel>
+                    <IonButton onClick={modifyPassword}>Modifier</IonButton>
                 </IonItem>
             </IonList>
             {inputForm}
@@ -75,4 +81,4 @@ const mapToProps = (state: RootState) => ({
     user: getUser(state)
 })
 
-export default connect(mapToProps)(SettingsPage)
+export default connect(mapToProps)(withRouter(SettingsPage))

@@ -37,6 +37,7 @@ export function isStudent(request: express.Request, res: express.Response, next:
 export const isUser = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
     const userRepository = getRepository(UserDB)
     const { email, password } = request.query
+
     try {
         const user = await userRepository.findOne({ email })
         if (user) {

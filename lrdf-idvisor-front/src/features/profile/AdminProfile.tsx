@@ -22,16 +22,14 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
 
     const deleteUser = (user: UserAccount) => {
         return async function apply() {
-            deleteData('user', 'delete', user)
+            const query = { email: user.user.email }
+            deleteData('user', 'delete', query)
+            setRefresh(true)
         }
     }
 
     const displayUsers = (userAccounts: UserAccount[]) => {
         const apply = (userAccount: UserAccount, index: number) => {
-            console.log("Test");
-
-            console.log(JSON.stringify(userAccount));
-
             return (
                 <>
                     <IonRow>

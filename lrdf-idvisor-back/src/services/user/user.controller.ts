@@ -1,7 +1,10 @@
+import { genSalt, hash } from 'bcryptjs';
 import express from 'express';
+import { User } from 'lrdf-idvisor-model';
 import { getRepository } from 'typeorm';
 import { isAdmin, isUser } from '../../middleware/auth';
 import Controller from '../../utils/controller';
+import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
 import UserDB from './user.entity';
 
@@ -25,14 +28,20 @@ class UserController implements Controller {
 
     private modifySettings = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         let { email } = request.query
-        const { field, value } = request.body
+        let { field, newValue } = request.body
+
+
+        const salt = await genSalt(env.SALT_ROUND);
+        newValue = field === 'password' ? await hash(newValue, salt) : newValue
+        console.log("Newvalue: " + newValue);
+
         try {
-            const user = await this.userRepository.findOne({ email }) as UserDB
-            user[field] = value
+            let user = await this.userRepository.findOne({ email }) as UserDB
+            user[field] = newValue
             await this.userRepository.save(user)
             const { username, role } = user
             email = user.email
-            HttpSuccess.send(response, "User information properly modified", { username, role, email })
+            HttpSuccess.send(response, `${field} field has now value ${user[field]}`, { username, role, email })
         }
         catch (e) {
             next(new HttpException(500, "Could not patch user informations", e))
@@ -47,8 +56,9 @@ class UserController implements Controller {
     }
 
     private deleteUser = async (request: express.Request, response: express.Response) => {
-        const user: UserDB = request.query
+        const user: User = request.query
         this.userRepository.delete({ email: user.email })
+        HttpSuccess.send(response, 'User successfully deleted')
     }
 }
 
