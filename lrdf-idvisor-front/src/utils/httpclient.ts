@@ -19,7 +19,9 @@ const createUrl = (service: string, action?: string) => {
     return action ? url + '/' + action : url
 }
 
-const paramsData = async (method: (url: string, data?: any, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<Response>>, service: string, action: string, body?: any) => {
+type AxiosMethod = (url: string, data?: any, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<Response>>
+
+const paramsData = async (method: AxiosMethod, service: string, action: string, body?: any) => {
     const url = createUrl(service, action)
     console.log("Request created : " + JSON.stringify({
         url,
@@ -28,11 +30,18 @@ const paramsData = async (method: (url: string, data?: any, config?: AxiosReques
     const result = await method(url, body)
     console.log("Response: " + JSON.stringify(result))
     return result
+}
+
+const sendData = async (method: AxiosMethod, service: string, action: string, data?: any, params?: any) => {
+    if (params)
+        return paramsData(method, service, action, { data, params })
+    else
+        return paramsData(method, service, action, data)
 
 }
 
 export const postData = async (service: string, action: string, data?: any, params?: any) => {
-    return paramsData(transport.post, service, action, { data, params })
+    return sendData(transport.post, service, action, data, params)
 }
 
 export const getData = async (service: string, action: string, params?: any) => {
@@ -44,5 +53,5 @@ export const deleteData = async (service: string, action: string, params?: any) 
 }
 
 export const patchData = async (service: string, action: string, data?: any, params?: any) => {
-    return paramsData(transport.patch, service, action, { data, params })
+    return sendData(transport.patch, service, action, data, params)
 }
