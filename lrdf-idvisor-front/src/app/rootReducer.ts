@@ -5,7 +5,7 @@ import sessionReducer from "../features/session/sessionSlice";
 
 const rootReducer = combineReducers({
     student: studentReducer,
-    session: sessionReducer,
+    session: sessionReducer
 })
 
 export type RootState = ReturnType<typeof rootReducer>

@@ -24,13 +24,15 @@ class UserController implements Controller {
     }
 
     private modifySettings = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
-        const { email } = request.query
+        let { email } = request.query
         const { field, value } = request.body
         try {
             const user = await this.userRepository.findOne({ email }) as UserDB
             user[field] = value
             await this.userRepository.save(user)
-            HttpSuccess.send(response, "User information properly modified")
+            const { username, role } = user
+            email = user.email
+            HttpSuccess.send(response, "User information properly modified", { username, role, email })
         }
         catch (e) {
             next(new HttpException(500, "Could not patch user informations", e))

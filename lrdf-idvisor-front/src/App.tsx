@@ -16,10 +16,10 @@ import '@ionic/react/css/typography.css';
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import ProtectedRoute from './features/session/ProtectedRoute';
-import Settings from './features/session/Settings';
 import Home from './pages/Home';
 import List from './pages/List';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import Sign from './pages/Sign';
 /* Theme variables */
 import './theme/variables.css';

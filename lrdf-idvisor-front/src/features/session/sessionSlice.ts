@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Role, UserAccount } from "lrdf-idvisor-model";
+import { Role, UserData } from "lrdf-idvisor-model";
 import { AppThunk, RootState } from "../../app/rootReducer";
-import { getData, postData } from "../../utils/httpclient";
+import { getData, patchData, postData } from "../../utils/httpclient";
+
+export interface UserAccount {
+    user: UserData,
+    role: Role
+}
 
 type CurrentSession = {
     userSession: UserAccount
@@ -94,14 +99,16 @@ export const signup = (
 }
 
 export const modifyField = (
+    email: string,
     newValue: string,
     field: string,
-    currentPassword: string,
+    password: string,
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        const result = await postData('user', 'modify', { field: newValue })
-        const { username, email, role } = result.data.result
+        const result = await patchData('user', 'modify', { field, newValue }, { email, password })
+        const { username, role } = result.data.result
+        email = result.data.result.email
         const user = { user: { username, email }, role }
         dispatch(initSession(user))
     }

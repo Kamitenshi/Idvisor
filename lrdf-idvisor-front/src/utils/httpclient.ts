@@ -19,26 +19,30 @@ const createUrl = (service: string, action?: string) => {
     return action ? url + '/' + action : url
 }
 
-const queryData = async (method: (url: string, data?: any, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<Response>>, service: string, action: string, body?: any) => {
+const paramsData = async (method: (url: string, data?: any, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<Response>>, service: string, action: string, body?: any) => {
     const url = createUrl(service, action)
-    const result = await method(url, body)
-    console.log("Request successfully sent: " + JSON.stringify({
+    console.log("Request created : " + JSON.stringify({
         url,
         body,
-        result
     })) // TODO: remove
+    const result = await method(url, body)
+    console.log("Response: " + JSON.stringify(result))
     return result
 
 }
 
-export const postData = async (service: string, action: string, body?: any) => {
-    return queryData(transport.post, service, action, body)
+export const postData = async (service: string, action: string, data?: any, params?: any) => {
+    return paramsData(transport.post, service, action, { data, params })
 }
 
 export const getData = async (service: string, action: string, params?: any) => {
-    return queryData(transport.get, service, action, { params })
+    return paramsData(transport.get, service, action, { params })
 }
 
 export const deleteData = async (service: string, action: string, params?: any) => {
-    return queryData(transport.delete, service, action, { params })
+    return paramsData(transport.delete, service, action, { params })
+}
+
+export const patchData = async (service: string, action: string, data?: any, params?: any) => {
+    return paramsData(transport.patch, service, action, { data, params })
 }
