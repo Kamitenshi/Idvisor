@@ -7,6 +7,7 @@ import { createConnection } from 'typeorm';
 import errorMiddleware from './middleware/error';
 import config from './ormconfig';
 import AuthController from './services/auth/auth.controller';
+import UniversityController from './services/university/university.controller';
 import UserController from './services/user/user.controller';
 import { env } from './utils/env';
 
@@ -38,7 +39,8 @@ class App {
     private initializeControllers() {
         const controllers = [
             new UserController(),
-            new AuthController()
+            new AuthController(),
+            new UniversityController()
         ];
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);
