@@ -20,6 +20,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Sign from './pages/Sign';
+import University from './pages/University';
 /* Theme variables */
 import './theme/variables.css';
 
@@ -31,7 +32,7 @@ const App: React.FC = () => (
         <Route path="/sign/:type" component={Sign} />
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
-        <ProtectedRoute path="/university" component={Home} />
+        <Route path="/university" component={University} />
         <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
