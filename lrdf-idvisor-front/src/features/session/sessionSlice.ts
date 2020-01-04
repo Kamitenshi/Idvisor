@@ -87,7 +87,6 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        console.log('coucou');
         await postData('auth', 'register/student', { username, email, password, role })
         const user = { user: { username, email }, role }
         dispatch(initSession(user))
@@ -103,6 +102,7 @@ export const modifyField = (
     newValue: string,
     field: string,
     password: string,
+    redirect: () => void,
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
@@ -111,6 +111,7 @@ export const modifyField = (
         email = result.data.result.email
         const user = { user: { username, email }, role }
         dispatch(initSession(user))
+        redirect()
     }
     catch (e) {
         setServerError('Mot de passe invalide')
