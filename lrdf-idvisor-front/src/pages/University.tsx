@@ -6,12 +6,12 @@ import UniversityForm from '../features/content-management/UniversityForm'
 
 interface UniversityInterface extends RouteComponentProps { }
 
-const University: React.FC<UniversityInterface> = ({ }) => {
+const University: React.FC<UniversityInterface> = () => {
 
     return (
         <PageWithMenu title='Université'>
             <IonContent>
-                <IonButton routerLink='/' color='secondary'>Retourner au menu principale</IonButton>
+                <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
                 <UniversityForm />
             </IonContent>
         </PageWithMenu>
