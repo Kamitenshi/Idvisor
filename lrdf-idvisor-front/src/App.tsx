@@ -17,7 +17,6 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import ProtectedRoute from './features/session/ProtectedRoute';
 import Home from './pages/Home';
-import List from './pages/List';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Sign from './pages/Sign';
@@ -29,12 +28,11 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/home" component={Home} exact={true} />
-        <Route path="/home/list" component={List} exact={true} />
         <Route path="/sign/:type" component={Sign} />
         <ProtectedRoute path="/profile" component={Profile} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/university" component={Home} />
-        <Route path="/" render={() => <Redirect to="/settings" />} exact={true} />
+        <ProtectedRoute path="/settings" component={Settings} />
+        <ProtectedRoute path="/university" component={Home} />
+        <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
