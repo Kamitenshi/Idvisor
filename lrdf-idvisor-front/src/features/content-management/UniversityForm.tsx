@@ -11,7 +11,7 @@ const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
     const [success, setSuccess] = useState('')
 
     const redirect = () => {
-        history.push('/university/all')
+        history.push('/university')
     }
 
     const submit = () => {
