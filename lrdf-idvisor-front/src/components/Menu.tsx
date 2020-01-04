@@ -1,17 +1,20 @@
 import { IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonTitle, IonToolbar } from '@ionic/react';
 import { logOut } from 'ionicons/icons';
+import { Role } from 'lrdf-idvisor-model';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AppPage } from '../declarations';
-import { logout } from '../features/session/sessionSlice';
+import { RootState } from '../app/rootReducer';
+import { getRole, logout } from '../features/session/sessionSlice';
+import { AppPage } from './PageWithMenu';
 
 
 interface MenuProps extends RouteComponentProps {
-  appPages: AppPage[];
+  appPages: AppPage[]
+  role: Role
 }
 
-const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => {
+const Menu: React.FunctionComponent<MenuProps> = ({ appPages, role }) => {
   const dispatch = useDispatch()
 
   const buttonLogout = () => {
@@ -28,14 +31,15 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => {
       <IonContent>
         <IonList>
           {appPages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem routerLink={appPage.url} routerDirection="none">
-                  <IonIcon slot="start" icon={appPage.icon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
+            if (!appPage.role || appPage.role === role)
+              return (
+                <IonMenuToggle key={index} autoHide={false}>
+                  <IonItem routerLink={appPage.url} routerDirection="none">
+                    <IonIcon slot="start" icon={appPage.icon} />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              );
           })}
           <IonMenuToggle key={appPages.length} autoHide={false}>
             <IonItem onClick={buttonLogout} href={'/'} routerDirection="none">
@@ -49,4 +53,8 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => {
   )
 }
 
-export default withRouter(Menu);
+const mapToProps = (state: RootState) => ({
+  role: getRole(state)
+})
+
+export default connect(mapToProps)(withRouter(Menu))
