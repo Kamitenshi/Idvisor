@@ -1,0 +1,15 @@
+FROM node:12.2.0-alpine
+
+WORKDIR /app
+
+COPY lrdf-idvisor-back .
+COPY lrdf-idvisor-model .
+
+COPY yarn.lock .
+
+RUN yarn install
+
+EXPOSE 4000
+
+CMD ["npm","start"]
+
