@@ -1,32 +1,34 @@
-import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonMenu, IonPage, IonSearchbar, IonSplitPane, IonText, IonTitle, IonToolbar } from '@ionic/react'
-import Cookie from 'js-cookie'
-import { UserData } from 'lrdf-idvisor-model'
+import { IonContent, IonHeader, IonItem, IonLabel, IonMenu, IonPage, IonSearchbar, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
+import { Role, UserData } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../app/rootReducer'
-import { getUser } from '../features/session/sessionSlice'
+import { getRole, getUser } from '../features/session/sessionSlice'
 import { getData, socket } from '../utils/httpclient'
 import { mapInList } from '../utils/list'
 
-interface ChatInterface {
-    user: UserData
-}
 
 interface SideBarInterface {
     setter: React.Dispatch<React.SetStateAction<string>>
+    role: Role
 }
 
-const SideBar: React.FC<SideBarInterface> = ({ setter }) => {
-    const [usernames, setUsernames] = useState([])
-    const [displayedItems, setDisplayedItems] = useState([])
+interface UserInfo {
+    username: string,
+    id: number
+}
+
+const SideBar: React.FC<SideBarInterface> = ({ role, setter }) => {
+    const [users, setUsers] = useState<UserInfo[]>([])
+    const [displayedItems, setDisplayedItems] = useState<any[]>([])
     const [search, setSearch] = useState('')
     const [refresh, setRefresh] = useState(true)
     useEffect(() => {
-        const getUsernames = async () => {
-            const response = await getData('user', 'all/username')
-            setUsernames(response.data.result.map((value: any) => value.username))
+        const getUserdata = async () => {
+            const response = await getData('user', 'chat')
+            setUsers(response.data.result.map((value: any) => { return { username: value.username, id: value.id } }))
         }
-        getUsernames()
+        getUserdata()
         setRefresh(false)
     }, [refresh])
 
@@ -50,7 +52,7 @@ const SideBar: React.FC<SideBarInterface> = ({ setter }) => {
     const handleSearchbar = (e: CustomEvent) => {
         setSearch((e.target as HTMLInputElement).value)
         setDisplayedItems(
-            usernames.filter((value: string) => value.indexOf(search) > -1)
+            users.filter((value: UserInfo) => value.username.indexOf(search) > -1)
         )
     }
 
@@ -71,23 +73,25 @@ const SideBar: React.FC<SideBarInterface> = ({ setter }) => {
     )
 }
 
-const Chat: React.FC<ChatInterface> = ({ user }) => {
-    socket.emit('init', Cookie.get('jwt'))
+interface ChatInterface {
+    user: UserData
+    role: Role
+}
+
+const Chat: React.FC<ChatInterface> = ({ user, role }) => {
     const callbackGet = () => {
         socket.emit('message')
     }
 
     const [message, setMessage] = useState('')
     const [discussionTitle, setDiscussionTitle] = useState('')
-    socket.on('coucou', (content: any) => setMessage(content))
 
+    const title = discussionTitle ? <h1>Discuter avec {discussionTitle}</h1> : null
     return (
         <IonSplitPane contentId='main'>
-            <SideBar setter={setDiscussionTitle} />
+            <SideBar role={role} setter={setDiscussionTitle} />
             <IonPage id='main'>
-                <h1>Chat with {discussionTitle}</h1>
-                <IonText>Response: {message}</IonText>
-                <IonButton onClick={callbackGet}>Get</IonButton>
+                {title}
             </IonPage>
         </IonSplitPane>
 
@@ -96,7 +100,8 @@ const Chat: React.FC<ChatInterface> = ({ user }) => {
 }
 
 const dispatchToProps = (state: RootState) => ({
-    user: getUser(state)
+    user: getUser(state),
+    role: getRole(state)
 })
 
 export default connect(dispatchToProps)(Chat)
