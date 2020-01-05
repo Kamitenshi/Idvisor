@@ -51,7 +51,6 @@ const Chat: React.FC<ChatInterface> = ({ user }) => {
             <IonPage id='main'>
                 <h1>Chat</h1>
                 <IonText>Response: {message}</IonText>
-                <IonText>Test: {test}</IonText>
                 <IonButton onClick={callbackGet}>Get</IonButton>
             </IonPage>
         </IonSplitPane>

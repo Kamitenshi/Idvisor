@@ -6,6 +6,7 @@ export type Role = "admin" | "student" | "advisor"
 
 @Entity()
 class UserDB {
+  //TODO: add an id to simplify relationship tables
   @PrimaryColumn()
   public email!: string
 
