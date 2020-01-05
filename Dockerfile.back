@@ -12,5 +12,5 @@ RUN yarn install
 
 EXPOSE 3000
 
-CMD ["npm","start-back"]
+CMD ["npm","run", "start-back"]
 
