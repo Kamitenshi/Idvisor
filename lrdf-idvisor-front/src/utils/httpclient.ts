@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import io from 'socket.io-client'
+import { env } from './env'
 
 export const transport = axios.create({
     withCredentials: true,
@@ -13,9 +14,7 @@ interface Response {
 
 const createUrl = (service: string, action?: string) => {
     const protocol = "http"
-    const domain = "localhost"
-    const port = 4000
-    const url = protocol + '://' + domain + ':' + port + '/' + service
+    const url = protocol + '://' + env.BACK_ADRESS + '/' + service
 
     return action ? url + '/' + action : url
 }
@@ -51,4 +50,4 @@ export const patchData = async (service: string, action: string, data?: any, par
 }
 
 
-export const socket = io.connect("http://localhost:4000")
+export const socket = io.connect("http://" + env.BACK_ADRESS)
