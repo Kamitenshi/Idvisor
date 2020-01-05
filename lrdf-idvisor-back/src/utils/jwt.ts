@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { sign, verify } from "jsonwebtoken";
 import { Role } from "../services/user/user.entity";
 
-const cookieName = "jwt";
+export const cookieName = "jwt";
 const privateKey = readFileSync('key.pem', 'utf8');
 
 const algorithm = 'HS256';
@@ -13,20 +13,20 @@ const algorithms = [algorithm];
 const optionsCheck = { algorithms }
 
 interface Token {
-    role: string;
+    role: string
+    email: string
 }
 
-
-export function createToken(response: express.Response, role: Role) {
-    const token = sign({ role }, privateKey, optionsCreate);
+export function createToken(response: express.Response, role: Role, email: string) {
+    const data: Token = { role, email }
+    const token = sign(data, privateKey, optionsCreate);
     response.cookie(cookieName, token, { maxAge: 1000 * 60 * 60 });
 }
 
-export function checkToken(request: express.Request) {
-    const token = request.cookies[cookieName];
-    const rawToken = verify(token, privateKey, optionsCheck);
-    const role = rawToken["role"];
-    const decryptedToken: Token = { role };
+export function checkToken(cookie) {
+    const rawToken = verify(cookie, privateKey, optionsCheck);
+    const { role, email } = rawToken as Token;
+    const decryptedToken: Token = { role, email };
     return decryptedToken;
 }
 

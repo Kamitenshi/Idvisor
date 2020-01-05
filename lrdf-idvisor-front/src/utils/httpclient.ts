@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import io from 'socket.io-client'
 
 export const transport = axios.create({
     withCredentials: true,
@@ -48,3 +49,6 @@ export const deleteData = async (service: string, action: string, params?: any) 
 export const patchData = async (service: string, action: string, data?: any, params?: any) => {
     return sendQuery(transport.patch, service, action, data, params)
 }
+
+
+export const socket = io.connect("http://localhost:4000")
