@@ -12,11 +12,11 @@ resource "aws_key_pair" "deployer" {
        }
 
   provisioner "local-exec" {
-    command =  "sleep 100; sudo echo ${aws_instance.nlpfubuntu.public_ip} > /etc/ansible/hosts"
+    command =  "sleep 20; sudo echo ${aws_instance.nlpfubuntu.public_ip} > /etc/ansible/hosts"
   }
   
   provisioner "local-exec" {
-        command = "sleep 120; export ANSIBLE_HOST_KEY_CHECKING=False; sudo ansible-playbook -u ubuntu --private-key ${var.private_key} playbook-install-docker.yml; pip install docker-compose; sudo ansible-playbook -u ubuntu --private-key ${var.private_key} playbook-docker-compose.yml"
+        command = "sleep 100; export ANSIBLE_HOST_KEY_CHECKING=False; ansible-playbook -u ubuntu --private-key ${var.private_key} playbook-install-docker.yml; pip install docker-compose; sudo ansible-playbook -u ubuntu --private-key ${var.private_key} playbook-docker-compose.yml"
     }
 
 
