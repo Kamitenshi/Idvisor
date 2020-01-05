@@ -31,16 +31,15 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
     const displayUsers = (userAccounts: UserAccount[]) => {
         const apply = (userAccount: UserAccount, index: number) => {
             return (
-                <>
-                    <IonRow>
-                        <IonCol>{userAccount.user.email}</IonCol>
-                        <IonCol>{userAccount.user.username}</IonCol>
-                        <IonCol>{userAccount.role}</IonCol>
-                        <IonCol>
-                            <IonButton color='danger' onClick={deleteUser(userAccount)}>Supprimer</IonButton>
-                        </IonCol>
-                    </IonRow>
-                </>)
+                <IonRow key={index}>
+                    <IonCol>{userAccount.user.email}</IonCol>
+                    <IonCol>{userAccount.user.username}</IonCol>
+                    <IonCol>{userAccount.role}</IonCol>
+                    <IonCol>
+                        <IonButton color='danger' onClick={deleteUser(userAccount)}>Supprimer</IonButton>
+                    </IonCol>
+                </IonRow>
+            )
         }
 
         return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], userAccounts, apply)

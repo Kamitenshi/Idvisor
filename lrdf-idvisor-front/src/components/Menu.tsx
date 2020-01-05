@@ -39,7 +39,8 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, role }) => {
                     <IonLabel>{appPage.title}</IonLabel>
                   </IonItem>
                 </IonMenuToggle>
-              );
+              )
+            else return null;;
           })}
           <IonMenuToggle key={appPages.length} autoHide={false}>
             <IonItem onClick={buttonLogout} href={'/'} routerDirection="none">
