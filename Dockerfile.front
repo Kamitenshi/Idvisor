@@ -2,14 +2,15 @@ FROM node:12.2.0-alpine
 
 WORKDIR /app
 
-COPY lrdf-idvisor-front .
-COPY lrdf-idvisor-model .
+COPY lrdf-idvisor-model ./lrdf-idvisor-model/
+COPY lrdf-idvisor-front ./lrdf-idvisor-front/
 
 COPY yarn.lock .
+COPY package.json .
 
 RUN yarn install
 
 EXPOSE 3000
 
-CMD ["npm","start"]
+CMD ["npm","start-front"]
 
