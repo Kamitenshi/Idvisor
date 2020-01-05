@@ -1,4 +1,4 @@
-import { IonButton, IonPage } from '@ionic/react'
+import { IonButton, IonContent, IonItem, IonLabel, IonList, IonPage, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
 import Cookie from 'js-cookie'
 import { UserData } from 'lrdf-idvisor-model'
 import React from 'react'
@@ -11,6 +11,31 @@ interface ChatInterface {
     user: UserData
 }
 
+const SideBar: React.FC = () => {
+    return (
+        <IonContent>
+            <IonToolbar>
+                <IonTitle>Conversations</IonTitle>
+            </IonToolbar>
+
+            <IonList>
+                <IonItem>
+                    <IonLabel>User</IonLabel>
+                </IonItem>
+                <IonItem>
+                    <IonLabel>User</IonLabel>
+                </IonItem>
+                <IonItem>
+                    <IonLabel>User</IonLabel>
+                </IonItem>
+                <IonItem>
+                    <IonLabel>User</IonLabel>
+                </IonItem>
+            </IonList>
+        </IonContent>
+    )
+}
+
 const Chat: React.FC<ChatInterface> = ({ user }) => {
     const callbackSend = () => {
         socket.emit('init', Cookie.get('jwt'))
@@ -21,11 +46,15 @@ const Chat: React.FC<ChatInterface> = ({ user }) => {
     }
 
     return (
-        <IonPage>
-            <h1>Chat</h1>
-            <IonButton onClick={callbackSend}>Envoyer</IonButton>
-            <IonButton onClick={callbackGet}>Get</IonButton>
-        </IonPage>
+        <IonSplitPane contentId='main'>
+            <SideBar />
+            <IonPage id='main'>
+                <h1>Chat</h1>
+                <IonButton onClick={callbackSend}>Envoyer</IonButton>
+                <IonButton onClick={callbackGet}>Get</IonButton>
+            </IonPage>
+        </IonSplitPane>
+
 
     )
 }
