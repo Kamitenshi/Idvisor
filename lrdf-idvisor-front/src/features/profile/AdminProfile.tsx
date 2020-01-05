@@ -1,9 +1,11 @@
-import { IonButton, IonCol, IonRow } from '@ionic/react'
-import { User } from 'lrdf-idvisor-model'
+import { IonButton, IonCol, IonInput, IonItem, IonLabel, IonList, IonPopover, IonRow, IonText } from '@ionic/react'
+import { Role, User } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { deleteData, getData } from '../../utils/httpclient'
 import { mapInGrid } from '../../utils/list'
-import { UserAccount } from '../session/sessionSlice'
+import { signup, UserAccount } from '../session/sessionSlice'
+import './AdminProfile.css'
 
 interface AdminProfilePageInterface { }
 
@@ -20,11 +22,15 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         getAllUsers()
     }, [refresh])
 
+    const refreshUserList = () => {
+        setRefresh(true)
+    }
+
     const deleteUser = (user: UserAccount) => {
         return async function apply() {
             const query = { email: user.user.email }
-            deleteData('user', 'delete', query)
-            setRefresh(true)
+            await deleteData('user', 'delete', query)
+            //TODO: refresh list when user is deleted 
         }
     }
 
@@ -46,17 +52,54 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], userAccounts, apply)
     }
 
-    const refreshUserList = () => {
-        setRefresh(true)
+    const [showPopover, setShowPopover] = useState(false)
+    const [userType, setUserType] = useState<Role>('admin')
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+    const dispatch = useDispatch()
+    const submit = () => {
+        const redirect = () => { setShowPopover(false); refreshUserList() }
+        dispatch(signup(username, userType, email, password, redirect, setError))
     }
+    const popover = (<IonPopover isOpen={showPopover} onDidDismiss={_ => setShowPopover(false)} id='popover'>
 
+        <h1>Création d'un nouveau {userType}</h1>
+        <form onSubmit={(e) => { e.preventDefault(); submit() }}>
+            <IonList>
+                <IonItem>
+                    <IonLabel>Nom utilisateur</IonLabel>
+                    <IonInput name="username" type="text" value={username} autofocus={true} required={true}
+                        onIonInput={(e) => setUsername((e.target as HTMLInputElement).value)} />
+                </IonItem>
+                <IonItem>
+                    <IonLabel>E-mail</IonLabel>
+                    <IonInput name="email" type="email" value={email} required={true}
+                        onIonInput={(e) => setEmail((e.target as HTMLInputElement).value)} />
+                </IonItem>
+                <IonItem>
+                    <IonLabel>Mot de passe</IonLabel>
+                    <IonInput name="password" type="password" value={password} required={true}
+                        onIonInput={(e) => setPassword((e.target as HTMLInputElement).value)} />
+                </IonItem>
+            </IonList>
+            <IonText color='danger'>{error}</IonText>
+            <br />
+            <IonButton type='submit'>Créer le nouvel utilisateur</IonButton>
+        </form>
+    </IonPopover>)
+
+    const addAdmin = () => { setShowPopover(true); setUserType('admin') }
+    const addAdvisor = () => { setShowPopover(true); setUserType('advisor') }
     return (
         <>
+            {popover}
             <IonButton onClick={refreshUserList}>Rafraîchir la liste des utilisateurs</IonButton>
             <h1>Liste des utilisateurs</h1>
             {displayUsers(users)}
-            <IonButton>Ajouter un administrateur</IonButton>
-            <IonButton>Ajouter un conseiller</IonButton>
+            <IonButton onClick={addAdmin}>Ajouter un administrateur</IonButton>
+            <IonButton onClick={addAdvisor}>Ajouter un conseiller</IonButton>
         </>
     )
 }

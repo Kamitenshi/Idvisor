@@ -87,9 +87,11 @@ export const signup = (
     setServerError: (msg: string) => void
 ): AppThunk => async dispatch => {
     try {
-        await postData('auth', 'register/student', { username, email, password, role })
-        const user = { user: { username, email }, role }
-        dispatch(initSession(user))
+        await postData('auth', `register/${role}`, { username, email, password, role })
+        if (role === "student") {
+            const user = { user: { username, email }, role }
+            dispatch(initSession(user))
+        }
         redirect()
     }
     catch (e) {
