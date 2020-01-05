@@ -22,8 +22,16 @@ class UserController implements Controller {
 
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, isAdmin, this.getAllUsers)
+        this.router.get(`${this.path}/all/username`, this.getAllUsernames)
         this.router.delete(`${this.path}/delete`, isAdmin, this.deleteUser)
         this.router.patch(`${this.path}/modify`, isUser, this.modifySettings) // TODO: Check user format
+    }
+
+    private getAllUsernames = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        this.userRepository.find({ select: ['username'] })
+            .then(HttpSuccess.sendCallback(response, "All usernames gathered"))
+            .catch(HttpException.sendCallback(response, 500, "All usernames could not be gathered"));
+
     }
 
     private modifySettings = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
