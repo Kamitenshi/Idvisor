@@ -11,11 +11,11 @@
 
     - name: Upload docker-compose .env file
       copy:
-        src: /home/ubuntu/Idvisor/terraform
+        src: /home/ubuntu/Idvisor/terraform/.env
         dest: ~/
     - name: Upload docker-compose files
       copy:
-        src: /home/ubuntu/Idvisor/terraform
+        src: /home/ubuntu/Idvisor/terraform/docker-compose.yml
         dest: ~/
     - name: Tear down existing services
       docker_compose:
