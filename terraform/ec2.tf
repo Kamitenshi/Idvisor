@@ -12,7 +12,7 @@ resource "aws_key_pair" "deployer" {
        }
 
   provisioner "local-exec" {
-    command =  "sleep 10; sudo echo ${aws_instance.nlpfubuntu.public_ip} > /etc/ansible/hosts"
+    command =  "sleep 100; sudo echo ${aws_instance.nlpfubuntu.public_ip} > /etc/ansible/hosts"
   }
   
   provisioner "local-exec" {
