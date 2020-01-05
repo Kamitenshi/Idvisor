@@ -33,7 +33,7 @@ const App: React.FC = () => (
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
         <ProtectedRoute path="/university" component={Home} />
-        <ProtectedRoute path="/chat" component={Chat} />
+        <Route path="/chat" component={Chat} />
         <Route path="/" render={() => <Redirect to="/chat" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
