@@ -22,7 +22,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, role }) => {
   }
 
   return (
-    <IonMenu contentId="main" type="overlay">
+    <IonMenu type="overlay">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Menu</IonTitle>
@@ -34,12 +34,13 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, role }) => {
             if (!appPage.role || appPage.role === role)
               return (
                 <IonMenuToggle key={index} autoHide={false}>
-                  <IonItem routerLink={appPage.url} routerDirection="none">
+                  <IonItem routerLink={appPage.url} routerDirection="forward">
                     <IonIcon slot="start" icon={appPage.icon} />
                     <IonLabel>{appPage.title}</IonLabel>
                   </IonItem>
                 </IonMenuToggle>
-              );
+              )
+            else return null;;
           })}
           <IonMenuToggle key={appPages.length} autoHide={false}>
             <IonItem onClick={buttonLogout} href={'/'} routerDirection="none">

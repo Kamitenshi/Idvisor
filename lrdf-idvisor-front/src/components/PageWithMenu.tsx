@@ -1,5 +1,5 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
-import { home, school, settings } from 'ionicons/icons'
+import { chatbubbles, home, school } from 'ionicons/icons'
 import { Role } from 'lrdf-idvisor-model'
 import React from 'react'
 import { capitalize } from '../utils/string'
@@ -35,9 +35,9 @@ const PageWithMenu: React.FC<PageInterface> = ({ title, children }) => {
             role: 'advisor'
         },
         {
-            title: 'Settings',
-            url: '/settings',
-            icon: settings
+            title: 'Chat',
+            url: '/chat',
+            icon: chatbubbles
         }
     ];
     return (

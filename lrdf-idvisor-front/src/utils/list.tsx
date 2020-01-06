@@ -14,7 +14,7 @@ const Grid: React.FC<GridInterface> = ({ columns, children }) => {
     return (
         <IonGrid>
             <IonRow>
-                {columns.map((name) => { return <IonCol>{name}</IonCol> })}
+                {columns.map((name, key) => { return <IonCol key={key}>{name}</IonCol> })}
             </IonRow>
             {children}
         </IonGrid>

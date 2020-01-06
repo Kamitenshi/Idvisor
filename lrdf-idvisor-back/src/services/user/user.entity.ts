@@ -1,11 +1,15 @@
 import { IsEmail, IsString } from 'class-validator'
-import { Column, Entity, PrimaryColumn } from "typeorm"
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Conversation, Message } from '../chat/chat.entity'
 
 export type Role = "admin" | "student" | "advisor"
 
 @Entity()
 class UserDB {
-  @PrimaryColumn()
+  //TODO: add an id to simplify relationship tables
+  @PrimaryGeneratedColumn()
+  public id!: number
+  @Column()
   public email!: string
 
   @Column()
@@ -16,6 +20,12 @@ class UserDB {
 
   @Column()
   public password!: string
+
+  @OneToMany(type => Message, message => message.author)
+  public messages!: Message[]
+
+  @ManyToMany(type => Conversation, conv => conv.users)
+  public conversations!: Conversation[]
 }
 
 export class RegisteringUser {
