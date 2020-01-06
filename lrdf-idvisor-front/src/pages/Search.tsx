@@ -1,4 +1,4 @@
-import { IonButton, IonCol, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
+import { IonApp, IonButton, IonCol, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import PageWithMenu from '../components/PageWithMenu'
@@ -12,53 +12,49 @@ interface University {
 }
 
 const Search: React.FC<SearchInterface> = () => {
-    const [universities, setUniversities] = useState([])
-    const [searchResults, setSearchResults] = useState([])
+    const [universities, setUniversities] = useState<University[]>([])
+    const [searchResults, setSearchResults] = useState<University[]>([])
     const [searchedValue, setSearchedValue] = useState('')
     const [refresh, setRefresh] = useState(true)
-    useEffect(() => {
-        async function getAllUniversities() {
-            setRefresh(false)
-            const result = await (await getData('university', 'all')).data.result
-            setUniversities(result)
-        }
+    const [showFilters, setShowFilters] = useState(false);
+    const [sortOrder, setSortOrder] = useState("alpha")
 
-        getAllUniversities()
-    }, [refresh])
+    useEffect(() => { getAllUniversities() }, [refresh])
+    useEffect(() => { updateSearchResults(searchedValue) }, [universities])
+    useEffect(() => { updateSearchResults(searchedValue) }, [sortOrder])
+
+    async function getAllUniversities() {
+        setUniversities(await (await getData('university', 'all')).data.result)
+    }
 
     const updateSearchResults = (searchString: string) => {
         setSearchedValue(searchString)
-        setSearchResults(universities.filter((value) => (value as University).name.indexOf(searchString) > -1))
+        setSearchResults(sortList(universities.filter((value) => (value as University).name.indexOf(searchString) > -1)))
     }
 
-    const displayUniversities = (list: University[]) => {
-        console.log("la liste à afficher est ", list)
+    const displayUniversities = () => {
+        console.log("le resultat à afficher est ", searchResults)
         const apply = (university: University) => {
             return (
-                <>
-                    <IonRow>
-                        <IonCol>{university.name}</IonCol>
-                    </IonRow>
-                </>)
+                <IonRow>
+                    <IonCol>{university.name}</IonCol>
+                </IonRow>)
         }
-        if (searchedValue && list.length === 0) {
+        if (searchedValue && searchResults.length === 0) {
             return <IonText color='danger'> Aucun résultat correspondant pour la recherche: {searchedValue}</IonText>
         }
-        else if (!searchedValue && list.length === 0) {
-            return mapInGrid(['Nom', ''], universities, apply)
-        }
         else {
-            return mapInGrid(['Nom', ''], list, apply)
+            return mapInGrid(['Nom', ''], searchResults, apply)
         }
     }
 
-    const [showFilters, setShowFilters] = useState(false);
-
-
-    const returnTrue = () => {
-        return true
+    const sortList = (list: University[]) => {
+        console.log("tri de la liste :", list)
+        switch (sortOrder) {
+            case "notAlpha": { return list.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1) }
+            default: { return list.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1) }
+        }
     }
-
 
     const showFiltersModule = () => {
         if (showFilters) {
@@ -68,7 +64,7 @@ const Search: React.FC<SearchInterface> = () => {
                     <IonList>
                         <IonItem>
                             <IonLabel>Ville</IonLabel>
-                            <IonSelect multiple={returnTrue()}>
+                            <IonSelect multiple={true} onIonChange={e => console.log((e.target as any).value)}>
                                 <IonSelectOption value="caen">Caen</IonSelectOption>
                                 <IonSelectOption value="paris1">Paris 1er</IonSelectOption>
                                 <IonSelectOption value="paris12">Paris 12e</IonSelectOption>
@@ -76,9 +72,16 @@ const Search: React.FC<SearchInterface> = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel>Type</IonLabel>
-                            <IonSelect interface="popover" multiple={returnTrue()}>
+                            <IonSelect multiple={true}>
                                 <IonSelectOption value="university">Université</IonSelectOption>
                                 <IonSelectOption value="curriculum">Formation</IonSelectOption>
+                            </IonSelect>
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel>Trier par</IonLabel>
+                            <IonSelect onIonChange={e => { setSortOrder((e.target as any).value) }}>
+                                <IonSelectOption value="aplha">De A à Z</IonSelectOption>
+                                <IonSelectOption value="notAlpha">De Z à A</IonSelectOption>
                             </IonSelect>
                         </IonItem>
                     </IonList>
@@ -87,16 +90,24 @@ const Search: React.FC<SearchInterface> = () => {
     }
 
     return (
-        <PageWithMenu title='Rechercher une université ou une formation'>
-            <IonContent>
-                <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
-                <IonSearchbar onInput={(e) => updateSearchResults(((e.target as any).value) as string)}></IonSearchbar>
-                <IonButton onClick={() => setShowFilters(!showFilters)}>Options</IonButton>
-                {showFiltersModule()}
-                <h1>Résultats de la recherche</h1>
-                {displayUniversities(searchResults)}
-            </IonContent>
-        </PageWithMenu >
+        <IonApp>
+            <PageWithMenu title='Rechercher une université ou une formation'>
+                <IonContent>
+                    <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
+                    <IonSearchbar onInput={(e) => updateSearchResults(((e.target as any).value) as string)}></IonSearchbar>
+                    <IonButton onClick={() => setShowFilters(!showFilters)}>Options</IonButton>
+                    <IonButton onClick={() => updateSearchResults(searchedValue)}>Rafraichir</IonButton>
+                    <IonButton onClick={() => setRefresh(true)}>Test</IonButton>
+
+
+
+                    {showFiltersModule()}
+                    <h1>Résultats de la recherche</h1>
+                    {displayUniversities()}
+                </IonContent>
+            </PageWithMenu >
+
+        </IonApp>
     )
 }
 
