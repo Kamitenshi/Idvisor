@@ -40,6 +40,7 @@ const sessionSlice = createSlice({
             state.userSession.role = role
             state.userSession.user.username = user.username
             state.userSession.user.email = user.email
+            state.userSession.user.id = user.id
             state.isAuthenticated = true
         }
     }

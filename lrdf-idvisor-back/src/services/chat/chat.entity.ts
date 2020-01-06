@@ -18,7 +18,7 @@ export class Message {
 @Entity()
 export class Conversation {
     @PrimaryGeneratedColumn()
-    private id!: number
+    public id!: number
     @OneToMany(type => Message, message => message.conversation)
     public messages!: Message[]
     @ManyToMany(type => UserDB, user => user.conversations)

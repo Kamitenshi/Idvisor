@@ -9,6 +9,7 @@ import { Conversation, Message } from './chat.entity'
 TODO: 
 - add proper error messages
 - delete socket when no more required
+- try catch
 */
 
 type email = string
@@ -56,6 +57,7 @@ class ChatController implements Controller {
     private createConversation(socket: SocketIO.Socket) {
         socket.on('createConversation', async ({ usersIds, cookie }) => {
             const token = checkToken(cookie)
+
             const user = await this.userRepo.findOne({ where: { id: token.id }, relations: ['conversations'] })
             if (!user) {
                 console.log('User does not exist');
@@ -64,21 +66,32 @@ class ChatController implements Controller {
             let users: UserDB[] = await this.userRepo.findByIds(usersIds, { relations: ['conversations'] })
             users.push(user)
 
-            const conversation = users[0].conversations.filter((value) => users[1].conversations.indexOf(value)) //TODO: to allow multiple user discussion should be changed
-            console.log(JSON.stringify(conversation));
+            let conversation = users[0].conversations
+                .flatMap((conv1) => users[1].conversations
+                    .filter((conv2) => conv1.id === conv2.id))[0] //TODO: to allow multiple user discussion should be changed
+            console.log('Conversation: ' + JSON.stringify(conversation));
 
-            if (conversation.length === 0) {
+            if (!conversation) {
                 const newConversation = new Conversation()
                 newConversation.users = users
-                this.conversationRepo.save(newConversation)
-                console.log("New conversation");
+                conversation = await this.conversationRepo.save(newConversation)
             }
+
+            const messages = (await this.messagesRepo.find({ select: ["content", "author"], where: { conversation: conversation }, relations: ['author'], order: { createdAt: 'ASC' } }))
+                .map((msg) => ({ content: msg.content, userId: msg.author.id }))
+            socket.emit('conversation', conversation.id, messages)
         })
     }
 
     private message(socket: SocketIO.Socket) {
-        socket.on('message', async (msg) => {
-            this.activeUsers.forEach((s, user) => { console.log("In for each: " + user); s.emit('coucou', 'tranquile ?') })
+        socket.on('message', async ({ authorId, conversationId, msg }) => {
+            const newMessage = new Message()
+            //@ts-ignore
+            newMessage.author = { id: authorId }
+            //@ts-ignore
+            newMessage.conversation = { id: conversationId }
+            newMessage.content = msg
+            await this.messagesRepo.save(newMessage)
         })
     }
 }
