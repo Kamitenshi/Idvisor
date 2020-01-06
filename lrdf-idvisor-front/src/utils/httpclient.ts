@@ -1,7 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import Cookie from 'js-cookie'
-import io from 'socket.io-client'
-import { env } from './env'
 
 export const transport = axios.create({
     withCredentials: true,
@@ -15,7 +12,9 @@ interface Response {
 
 const createUrl = (service: string, action?: string) => {
     const protocol = "http"
-    const url = protocol + '://' + env.BACK_ADRESS + '/' + service
+    const domain = "localhost"
+    const port = 4000
+    const url = protocol + '://' + domain + ':' + port + '/' + service
 
     return action ? url + '/' + action : url
 }
@@ -29,7 +28,7 @@ const sendQuery = async (method: AxiosMethod, service: string, action: string, b
         body,
         params
     })) // TODO: remove
-    const result = body ? await method(url, body, { params }) : await method(url, { params })
+    const result = await body ? method(url, body, { params }) : method(url, { params })
     console.log("Response: " + JSON.stringify(result))
     return result
 }
@@ -49,8 +48,3 @@ export const deleteData = async (service: string, action: string, params?: any) 
 export const patchData = async (service: string, action: string, data?: any, params?: any) => {
     return sendQuery(transport.patch, service, action, data, params)
 }
-
-export const getToken = () => Cookie.get('jwt')
-
-
-export const socket = io.connect("http://" + env.BACK_ADRESS)

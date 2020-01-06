@@ -2,14 +2,11 @@ import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 import express from 'express';
-import { createServer } from 'http';
 import morgan from 'morgan';
-import SocketIO from 'socket.io';
 import { createConnection } from 'typeorm';
 import errorMiddleware from './middleware/error';
 import config from './ormconfig';
 import AuthController from './services/auth/auth.controller';
-import ChatController from './services/chat/chat.controller';
 import UniversityController from './services/university/university.controller';
 import UserController from './services/user/user.controller';
 import { env } from './utils/env';
@@ -18,14 +15,10 @@ import { env } from './utils/env';
 class App {
     public app: express.Application;
     public port: number;
-    private io: SocketIO.Server
-    private server
 
     private constructor() {
         this.app = express();
         this.port = Number(env.SERVER_PORT);
-        this.server = createServer(this.app)
-        this.io = SocketIO(this.server)
 
         this.initializeMiddlewares();
         this.initializeControllers();
@@ -36,7 +29,7 @@ class App {
         this.app.use(morgan("dev"));
         this.app.use(cors({
             credentials: true,
-            origin: 'http://' + env.FRONT_ADRESS //TODO: set in environment variable
+            origin: 'http://localhost:3000' //TODO: set in environment variable
         }));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,8 +40,7 @@ class App {
         const controllers = [
             new UserController(),
             new AuthController(),
-            new UniversityController(),
-            new ChatController(this.io)
+            new UniversityController()
         ];
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);
@@ -71,7 +63,7 @@ class App {
     }
 
     public listen() {
-        this.server.listen(this.port, () => {
+        this.app.listen(this.port, () => {
             console.log(`App listening on the port ${this.port}`);
         });
     }

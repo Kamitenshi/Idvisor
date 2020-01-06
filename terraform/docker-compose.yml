@@ -24,7 +24,6 @@ services:
     - "3000:3000"
     networks:
     - postgres
-    env_file: .envfront
 
   back:
     container_name: back
@@ -33,7 +32,6 @@ services:
     - "4000:4000"
     networks:
     - postgres
-    env_file: .envback
  
 networks:
   postgres:

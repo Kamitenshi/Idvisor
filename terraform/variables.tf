@@ -8,5 +8,5 @@ variable "sshkeypub" {
 
 variable "private_key" {
   # default = "~/.ssh/deployer"
-  default = "deployer"
+  default = "./deployer"
 }

@@ -23,27 +23,6 @@
 3. Launch back: `npm run start-back`
 4. Launch front: `npm run start-front`
 
-### Environment variables
-
-Place .env files at the root of its project
-
-*lrdf-idvisor-back*:
-```
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_DB=postgres
-SERVER_PORT=4000
-PGADMIN_DEFAULT_EMAIL=test@test.fr
-PGADMIN_DEFAULT_PASSWORD=test
-FRONT_ADRESS=localhost:3000
-```
-
-*lrdf-idvisor-front*:
-```
-REACT_APP_BACK_ADRESS=localhost:4000
-```
-
 ## Must read before development
 
 ### Manipulating data on Front Side
