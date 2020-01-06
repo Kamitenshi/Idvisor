@@ -1,5 +1,5 @@
 import { IsEmail, IsString } from 'class-validator'
-import { Column, Entity, ManyToMany, OneToMany, PrimaryColumn } from "typeorm"
+import { Column, Entity, ManyToMany, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm"
 import { Conversation, Message } from '../chat/chat.entity'
 
 export type Role = "admin" | "student" | "advisor"
@@ -7,6 +7,8 @@ export type Role = "admin" | "student" | "advisor"
 @Entity()
 class UserDB {
   //TODO: add an id to simplify relationship tables
+  @PrimaryGeneratedColumn()
+  public id!: number
   @PrimaryColumn()
   public email!: string
 

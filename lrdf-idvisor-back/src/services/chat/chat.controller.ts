@@ -52,6 +52,10 @@ class ChatController implements Controller {
         })
     }
 
+    private createConversation(socket: SocketIO.Socket) {
+
+    }
+
     private message(socket: SocketIO.Socket) {
         socket.on('message', async (msg) => {
             this.activeUsers.forEach((s, user) => { console.log("In for each: " + user); s.emit('coucou', 'tranquile ?') })

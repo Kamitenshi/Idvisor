@@ -58,11 +58,12 @@ class AuthController implements Controller {
             if (found === undefined) {
                 const salt = await genSalt(env.SALT_ROUND);
                 const hashedPassword = await hash(userData.password, salt);
-                this.userRepository.insert({
+                await this.userRepository.insert({
                     ...userData,
                     password: hashedPassword
                 })
-                    .then(HttpSuccess.sendCallback(response, "User successfuly created"))
+                HttpSuccess.send(response, "User successfuly created",
+                    { username: userData.username, email: userData.email, role: userData.role, id: userData.id })
             }
             else {
                 next(new HttpException(403, "E-mail is already taken"));
@@ -78,7 +79,7 @@ class AuthController implements Controller {
         try {
             const user = await this.userRepository.findOne({ email: userData.email }) as UserDB
             createToken(response, user.role, user.email);
-            HttpSuccess.send(response, `Session created - user: ${userData.email}`, { username: user.username, role: user.role });
+            HttpSuccess.send(response, `Session created - user: ${userData.email}`, { username: user.username, role: user.role, id: user.id });
         }
         catch (err) {
             next(new HttpException(500, "Could not loggin user", err));

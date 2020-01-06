@@ -16,7 +16,7 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         async function getAllUsers() {
             setRefresh(false)
             const result = await (await getData('user', 'all')).data.result
-            setUsers(result.map((user: User): UserAccount => { return { user: { email: user.email, username: user.username }, role: user.role } }))
+            setUsers(result.map((user: User): UserAccount => { return { user: { email: user.email, username: user.username, id: user.id }, role: user.role } }))
         }
 
         getAllUsers()
