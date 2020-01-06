@@ -1,9 +1,8 @@
-import { IonApp, IonButton, IonCol, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
+import { IonApp, IonButton, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import PageWithMenu from '../components/PageWithMenu'
 import { getData } from '../utils/httpclient'
-import { mapInGrid } from '../utils/list'
 
 interface SearchInterface extends RouteComponentProps { }
 
@@ -14,45 +13,46 @@ interface University {
 const Search: React.FC<SearchInterface> = () => {
     const [universities, setUniversities] = useState<University[]>([])
     const [searchResults, setSearchResults] = useState<University[]>([])
-    const [searchedValue, setSearchedValue] = useState('')
-    const [refresh, setRefresh] = useState(true)
+    const [searchedValue, setSearchedValue] = useState<string>('')
+    const [refresh] = useState(true)
     const [showFilters, setShowFilters] = useState(false);
     const [sortOrder, setSortOrder] = useState("alpha")
 
-    useEffect(() => { getAllUniversities() }, [refresh])
-    useEffect(() => { updateSearchResults(searchedValue) }, [universities])
-    useEffect(() => { updateSearchResults(searchedValue) }, [sortOrder])
+    useEffect(() => {
+        async function getAllUniversities() {
+            setUniversities(await (await getData('university', 'all')).data.result)
+        };
+        getAllUniversities()
+    }, [refresh])
 
-    async function getAllUniversities() {
-        setUniversities(await (await getData('university', 'all')).data.result)
-    }
-
-    const updateSearchResults = (searchString: string) => {
-        setSearchedValue(searchString)
-        setSearchResults(sortList(universities.filter((value) => (value as University).name.indexOf(searchString) > -1)))
-    }
+    useEffect(() => {
+        const sortList = (list: University[]) => {
+            console.log("tri de la liste :", list)
+            switch (sortOrder) {
+                case "notAlpha": { return list.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1) }
+                default: { return list.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1) }
+            }
+        }
+        setSearchResults(sortList(universities.filter((value) => (value as University).name.indexOf(searchedValue) > -1)))
+    }, [universities, sortOrder, searchedValue])
 
     const displayUniversities = () => {
-        console.log("le resultat à afficher est ", searchResults)
-        const apply = (university: University) => {
-            return (
-                <IonRow>
-                    <IonCol>{university.name}</IonCol>
-                </IonRow>)
-        }
         if (searchedValue && searchResults.length === 0) {
             return <IonText color='danger'> Aucun résultat correspondant pour la recherche: {searchedValue}</IonText>
         }
         else {
-            return mapInGrid(['Nom', ''], searchResults, apply)
-        }
-    }
-
-    const sortList = (list: University[]) => {
-        console.log("tri de la liste :", list)
-        switch (sortOrder) {
-            case "notAlpha": { return list.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1) }
-            default: { return list.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1) }
+            return (
+                <IonList>
+                    {searchResults.map((university) => {
+                        return (
+                            <IonItem routerLink={'university/page/' + university.name}>
+                                <IonRow>
+                                    {university.name}
+                                </IonRow></IonItem>
+                        )
+                    })}
+                </IonList >
+            )
         }
     }
 
@@ -85,7 +85,8 @@ const Search: React.FC<SearchInterface> = () => {
                             </IonSelect>
                         </IonItem>
                     </IonList>
-                </>)
+                </>
+            )
         }
     }
 
@@ -94,13 +95,8 @@ const Search: React.FC<SearchInterface> = () => {
             <PageWithMenu title='Rechercher une université ou une formation'>
                 <IonContent>
                     <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
-                    <IonSearchbar onInput={(e) => updateSearchResults(((e.target as any).value) as string)}></IonSearchbar>
+                    <IonSearchbar onInput={(e) => setSearchedValue(((e.target as any).value) as string)} placeholder="Rechercher"></IonSearchbar>
                     <IonButton onClick={() => setShowFilters(!showFilters)}>Options</IonButton>
-                    <IonButton onClick={() => updateSearchResults(searchedValue)}>Rafraichir</IonButton>
-                    <IonButton onClick={() => setRefresh(true)}>Test</IonButton>
-
-
-
                     {showFiltersModule()}
                     <h1>Résultats de la recherche</h1>
                     {displayUniversities()}
