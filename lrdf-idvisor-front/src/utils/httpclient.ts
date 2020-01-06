@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import Cookie from 'js-cookie'
 import io from 'socket.io-client'
 import { env } from './env'
 
@@ -48,6 +49,8 @@ export const deleteData = async (service: string, action: string, params?: any) 
 export const patchData = async (service: string, action: string, data?: any, params?: any) => {
     return sendQuery(transport.patch, service, action, data, params)
 }
+
+export const getToken = () => Cookie.get('jwt')
 
 
 export const socket = io.connect("http://" + env.BACK_ADRESS)

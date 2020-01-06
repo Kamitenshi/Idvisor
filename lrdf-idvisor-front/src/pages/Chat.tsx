@@ -5,12 +5,12 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../app/rootReducer'
 import { getRole, getUser } from '../features/session/sessionSlice'
-import { getData, socket } from '../utils/httpclient'
+import { getData, getToken, socket } from '../utils/httpclient'
 import { mapInList } from '../utils/list'
 
 
 interface SideBarInterface {
-    setter: (_: string) => void
+    setter: (_: string, __: number) => void
     user: UserData
 }
 
@@ -37,7 +37,7 @@ const SideBar: React.FC<SideBarInterface> = ({ user, setter }) => {
 
     const handleClick = (userInfo: UserInfo) => {
         return () => {
-            setter(userInfo.username)
+            setter(userInfo.username, userInfo.id)
             socket.emit('createConversation', { cookie: Cookie.get('jwt'), usersIds: [userInfo.id] })
         }
     }
@@ -89,18 +89,22 @@ interface Message {
 }
 
 const Chat: React.FC<ChatInterface> = ({ user, role }) => {
-    const callbackGet = () => {
-        socket.emit('message')
-    }
-
     const [messages, setMessages] = useState<Message[]>([])
     const [userMessage, setUsermessage] = useState('')
     const [conversationId, setConversationId] = useState(-1)
+    const [receiverId, setReceiverId] = useState<number>(-1)
     const [discussionTitle, setDiscussionTitle] = useState('')
 
-    const startConversation = (title: string) => {
+    socket.on('message', (conversationIdReceived: number, senderId: number, msg: string) => {
+        if (conversationId === conversationIdReceived) {
+            setMessages([...messages, { userId: senderId, content: msg }])
+        }
+    })
+
+    const startConversation = (title: string, receiverId: number) => {
         socket.on('conversation', (id: number, messages: Message[]) => {
             setConversationId(id)
+            setReceiverId(receiverId)
             setMessages(messages)
             console.log(JSON.stringify(messages))
         })
@@ -108,9 +112,9 @@ const Chat: React.FC<ChatInterface> = ({ user, role }) => {
     }
 
     const sendMessage = () => {
-        const authorId = user.id
+        const cookie = getToken()
         const msg = userMessage
-        socket.emit('message', { authorId, conversationId, msg })
+        socket.emit('message', { cookie, receiverId, conversationId, msg })
         setMessages([...messages, { userId: user.id, content: userMessage }])
         setUsermessage('')
     }

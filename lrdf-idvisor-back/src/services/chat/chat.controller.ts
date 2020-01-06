@@ -12,13 +12,11 @@ TODO:
 - try catch
 */
 
-type email = string
-
 class ChatController implements Controller {
     public path = '/chat'
     public router = express.Router()
     private socketServer: SocketIO.Server
-    private activeUsers: Map<email, SocketIO.Socket> = new Map()
+    private activeUsers: Map<number, SocketIO.Socket> = new Map()
     private messagesRepo = getRepository(Message)
     private conversationRepo = getRepository(Conversation)
     private userRepo = getRepository(UserDB)
@@ -43,7 +41,7 @@ class ChatController implements Controller {
                 const token = checkToken(cookie)
                 const user = await this.userRepo.findOne(token.id)
                 if (user)
-                    this.activeUsers.set(user.email, socket)
+                    this.activeUsers.set(token.id, socket)
                 else {
                     console.log("User does not exist");
                 }
@@ -69,8 +67,6 @@ class ChatController implements Controller {
             let conversation = users[0].conversations
                 .flatMap((conv1) => users[1].conversations
                     .filter((conv2) => conv1.id === conv2.id))[0] //TODO: to allow multiple user discussion should be changed
-            console.log('Conversation: ' + JSON.stringify(conversation));
-
             if (!conversation) {
                 const newConversation = new Conversation()
                 newConversation.users = users
@@ -84,14 +80,18 @@ class ChatController implements Controller {
     }
 
     private message(socket: SocketIO.Socket) {
-        socket.on('message', async ({ authorId, conversationId, msg }) => {
+        socket.on('message', async ({ cookie, receiverId, conversationId, msg }) => {
             const newMessage = new Message()
+            const authorId = checkToken(cookie).id
             //@ts-ignore
             newMessage.author = { id: authorId }
             //@ts-ignore
             newMessage.conversation = { id: conversationId }
             newMessage.content = msg
             await this.messagesRepo.save(newMessage)
+
+            const senderId = authorId
+            this.activeUsers.get(receiverId)?.emit('message', conversationId, senderId, msg)
         })
     }
 }
