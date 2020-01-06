@@ -28,7 +28,7 @@ const sendQuery = async (method: AxiosMethod, service: string, action: string, b
         body,
         params
     })) // TODO: remove
-    const result = await body ? method(url, body, { params }) : method(url, { params })
+    const result = body ? await method(url, body, { params }) : await method(url, { params })
     console.log("Response: " + JSON.stringify(result))
     return result
 }

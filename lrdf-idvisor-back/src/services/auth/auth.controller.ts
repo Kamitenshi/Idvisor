@@ -78,7 +78,7 @@ class AuthController implements Controller {
         const userData: UserDB = request.query;
         try {
             const user = await this.userRepository.findOne({ email: userData.email }) as UserDB
-            createToken(response, user.role, user.email);
+            createToken(response, user.role, user.email, user.id);
             HttpSuccess.send(response, `Session created - user: ${userData.email}`, { username: user.username, role: user.role, id: user.id });
         }
         catch (err) {

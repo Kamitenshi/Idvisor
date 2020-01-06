@@ -32,6 +32,7 @@ class ChatController implements Controller {
             console.log("Client connected with socket") //TODO: remove
             this.init(socket)
             this.message(socket)
+            this.createConversation(socket)
         })
     }
 
@@ -39,7 +40,7 @@ class ChatController implements Controller {
         socket.on('init', async (cookie) => {
             try {
                 const token = checkToken(cookie)
-                const user = await this.userRepo.findOne(token.email)
+                const user = await this.userRepo.findOne(token.id)
                 if (user)
                     this.activeUsers.set(user.email, socket)
                 else {
@@ -53,7 +54,26 @@ class ChatController implements Controller {
     }
 
     private createConversation(socket: SocketIO.Socket) {
+        socket.on('createConversation', async ({ usersIds, cookie }) => {
+            const token = checkToken(cookie)
+            const user = await this.userRepo.findOne({ where: { id: token.id }, relations: ['conversations'] })
+            if (!user) {
+                console.log('User does not exist');
+                return
+            }
+            let users: UserDB[] = await this.userRepo.findByIds(usersIds, { relations: ['conversations'] })
+            users.push(user)
 
+            const conversation = users[0].conversations.filter((value) => users[1].conversations.indexOf(value)) //TODO: to allow multiple user discussion should be changed
+            console.log(JSON.stringify(conversation));
+
+            if (conversation.length === 0) {
+                const newConversation = new Conversation()
+                newConversation.users = users
+                this.conversationRepo.save(newConversation)
+                console.log("New conversation");
+            }
+        })
     }
 
     private message(socket: SocketIO.Socket) {

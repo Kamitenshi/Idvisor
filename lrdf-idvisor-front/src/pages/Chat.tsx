@@ -1,4 +1,5 @@
 import { IonContent, IonHeader, IonItem, IonLabel, IonMenu, IonPage, IonSearchbar, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
+import Cookie from 'js-cookie'
 import { Role, UserData } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
@@ -32,17 +33,18 @@ const SideBar: React.FC<SideBarInterface> = ({ role, setter }) => {
         setRefresh(false)
     }, [refresh])
 
-    const handleClick = (usernames: string) => {
+    const handleClick = (userInfo: UserInfo) => {
         return () => {
-            setter(usernames)
+            setter(userInfo.username)
+            socket.emit('createConversation', { cookie: Cookie.get('jwt'), usersIds: [userInfo.id] })
         }
     }
 
     const displayItems = () => {
-        const apply = (object: any, index: number) => {
+        const apply = (user: UserInfo, index: number) => {
             return (
-                <IonItem key={index} onClick={handleClick(object)}>
-                    <IonLabel>{object}</IonLabel>
+                <IonItem key={index} onClick={handleClick(user)}>
+                    <IonLabel>{user.username}</IonLabel>
                 </IonItem>
             )
         }
