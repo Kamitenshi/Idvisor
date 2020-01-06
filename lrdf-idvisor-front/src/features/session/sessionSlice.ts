@@ -40,6 +40,7 @@ const sessionSlice = createSlice({
             state.userSession.role = role
             state.userSession.user.username = user.username
             state.userSession.user.email = user.email
+            state.userSession.user.id = user.id
             state.isAuthenticated = true
         }
     }
@@ -96,8 +97,11 @@ export const signup = (
             const { username, role, email, id } = response.data.result
             const user = { user: { username, email, id }, role }
             dispatch(initSession(user))
+            dispatch(signin(oldEmail, password, redirect, setServerError))
         }
-        redirect()
+        else {
+            redirect()
+        }
     }
     catch (e) {
         setServerError("Cet email est déjà associé à un compte") //TODO: error message should display when backend is down

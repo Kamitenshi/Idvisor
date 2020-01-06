@@ -9,15 +9,14 @@ import { Conversation, Message } from './chat.entity'
 TODO: 
 - add proper error messages
 - delete socket when no more required
+- try catch
 */
-
-type email = string
 
 class ChatController implements Controller {
     public path = '/chat'
     public router = express.Router()
     private socketServer: SocketIO.Server
-    private activeUsers: Map<email, SocketIO.Socket> = new Map()
+    private activeUsers: Map<number, SocketIO.Socket> = new Map()
     private messagesRepo = getRepository(Message)
     private conversationRepo = getRepository(Conversation)
     private userRepo = getRepository(UserDB)
@@ -32,6 +31,7 @@ class ChatController implements Controller {
             console.log("Client connected with socket") //TODO: remove
             this.init(socket)
             this.message(socket)
+            this.createConversation(socket)
         })
     }
 
@@ -39,9 +39,9 @@ class ChatController implements Controller {
         socket.on('init', async (cookie) => {
             try {
                 const token = checkToken(cookie)
-                const user = await this.userRepo.findOne(token.email)
+                const user = await this.userRepo.findOne(token.id)
                 if (user)
-                    this.activeUsers.set(user.email, socket)
+                    this.activeUsers.set(token.id, socket)
                 else {
                     console.log("User does not exist");
                 }
@@ -53,12 +53,45 @@ class ChatController implements Controller {
     }
 
     private createConversation(socket: SocketIO.Socket) {
+        socket.on('createConversation', async ({ usersIds, cookie }) => {
+            const token = checkToken(cookie)
 
+            const user = await this.userRepo.findOne({ where: { id: token.id }, relations: ['conversations'] })
+            if (!user) {
+                console.log('User does not exist');
+                return
+            }
+            let users: UserDB[] = await this.userRepo.findByIds(usersIds, { relations: ['conversations'] })
+            users.push(user)
+
+            let conversation = users[0].conversations
+                .flatMap((conv1) => users[1].conversations
+                    .filter((conv2) => conv1.id === conv2.id))[0] //TODO: to allow multiple user discussion should be changed
+            if (!conversation) {
+                const newConversation = new Conversation()
+                newConversation.users = users
+                conversation = await this.conversationRepo.save(newConversation)
+            }
+
+            const messages = (await this.messagesRepo.find({ select: ["content", "author"], where: { conversation: conversation }, relations: ['author'], order: { createdAt: 'ASC' } }))
+                .map((msg) => ({ content: msg.content, userId: msg.author.id }))
+            socket.emit('conversation', conversation.id, messages)
+        })
     }
 
     private message(socket: SocketIO.Socket) {
-        socket.on('message', async (msg) => {
-            this.activeUsers.forEach((s, user) => { console.log("In for each: " + user); s.emit('coucou', 'tranquile ?') })
+        socket.on('message', async ({ cookie, receiverId, conversationId, msg }) => {
+            const newMessage = new Message()
+            const authorId = checkToken(cookie).id
+            //@ts-ignore
+            newMessage.author = { id: authorId }
+            //@ts-ignore
+            newMessage.conversation = { id: conversationId }
+            newMessage.content = msg
+            await this.messagesRepo.save(newMessage)
+
+            const senderId = authorId
+            this.activeUsers.get(receiverId)?.emit('message', conversationId, senderId, msg)
         })
     }
 }
