@@ -67,13 +67,10 @@ class AuthController implements Controller {
 
                 //TODO: refactor this part of the code
                 if (role === 'student') {
-                    await this.studentRepo.save({ user: { id: user.id } })
+                    await this.studentRepo.save({ user })
                 }
                 else if (role === 'advisor') {
                     await this.advisorRepo.save({ user })
-                    const test = await this.advisorRepo.find()
-                    console.log("Advisors: " + JSON.stringify(test));
-
                 }
                 HttpSuccess.send(response, "User successfuly created",
                     { username: userData.username, email: userData.email, role: userData.role, id: userData.id })

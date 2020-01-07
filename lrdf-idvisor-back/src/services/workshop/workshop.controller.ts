@@ -24,7 +24,17 @@ class WorkshopController implements Controller {
         this.router.get(`${this.path}/all`, this.getAllWorkshops)
         this.router.get(`${this.path}/information`, this.getWorkshopInformation)
         this.router.post(`${this.path}/create/workshop`, this.createWorkshop)
-        this.router.post(`${this.path}/create/skill`, this.createSkill)
+        this.router.post(`${this.path}/add/skill`, this.createSkill)
+        this.router.post(`${this.path}/add/student`, this.addStudent)
+    }
+
+    private addStudent = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const { idStudents, workshopId } = request.body
+        let workshop = await this.workshopRepo.findOne(workshopId)
+        if (workshop) {
+            workshop.students = idStudents.map(student => ({ id: student }))
+            this.workshopRepo.save(workshop)
+        }
     }
 
     private getAllWorkshops = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -35,15 +45,13 @@ class WorkshopController implements Controller {
 
     private getWorkshopInformation = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const { id } = request.body
-        const workshop = await this.workshopRepo.findOne(id, { relations: ["advisors", "advisors.user", "skills", "students"] })
+        const workshop = await this.workshopRepo.findOne(id, { relations: ["advisors", "advisors.user", "skills", "students", "students.user"] })
 
         if (workshop) {
             const { students, skills, advisors } = workshop
-            //@ts-ignore
-            console.log(JSON.stringify(advisors));
-
             const advisorsUsernames = advisors.map(adv => ({ username: adv.user.username }))
-            HttpSuccess.send(response, "Workshop information retrieved", { students, skills, advisors: advisorsUsernames })
+            const studentUsernames = students.map(stu => ({ username: stu.user.username }))
+            HttpSuccess.send(response, "Workshop information retrieved", { students: studentUsernames, skills, advisors: advisorsUsernames })
         }
         else {
             next(new HttpException(403, "Workshop with id: " + id + " does not exist"))
@@ -66,7 +74,7 @@ class WorkshopController implements Controller {
         //@ts-ignore
         newWorkshop.advisors = [advisor]
         newWorkshop.students = []
-        const result = await this.workshopRepo.save(newWorkshop)
+        await this.workshopRepo.save(newWorkshop)
 
         HttpSuccess.send(response, "Workshop successfuly created")
     }
