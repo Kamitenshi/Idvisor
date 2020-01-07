@@ -1,6 +1,5 @@
-import { University } from "lrdf-idvisor-model"
-import UniversityDB from "services/university/university.entity"
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import UniversityDB from "../../services/university/university.entity"
 
 
 @Entity()
@@ -14,9 +13,6 @@ export class CurriculumDB {
     @Column()
     public description!: string
 
-    @Column()
-    public skills!: string[]
-
     @ManyToOne(_ => UniversityDB, university => university.name)
-    public university!: University
+    public university!: UniversityDB
 }

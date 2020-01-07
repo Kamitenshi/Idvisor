@@ -1,5 +1,4 @@
 import express from "express";
-import { University } from "lrdf-idvisor-model";
 import { getRepository } from 'typeorm';
 import { isAdvisor } from "../../middleware/auth";
 import modelValidatorMiddleware from "../../middleware/model.validator";
@@ -24,14 +23,14 @@ class UniversityController implements Controller {
     }
 
     private getAllUniversities = async (request: express.Request, response: express.Response) => {
-        this.universityRepository.find({ select: ['name'] })
+        this.universityRepository.find({ where: ['name'] })
             .then(HttpSuccess.sendCallback(response, "All universities gathered"))
             .catch(HttpException.sendCallback(response, 500, "All universities could not be gathered"));
     }
 
     private getUniversity = async (request: express.Request, response: express.Response) => {
-        const university: University = request.query
-        this.universityRepository.findOne(university.name)
+        const { name } = request.query
+        this.universityRepository.findOne(name, { relations: ["curriculums"] })
             .then(HttpSuccess.sendCallback(response, "University found"))
             .catch(HttpException.sendCallback(response, 500, "Couldn't find the university"));
     }
@@ -39,7 +38,7 @@ class UniversityController implements Controller {
     private addUniversity = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const universityData: UniversityDB = { ...request.body };
         try {
-            const found = await this.universityRepository.findOne({ name: universityData.name })
+            const found = await this.universityRepository.findOne({ name: universityData.name, curriculums: [] })
             if (found === undefined) {
                 this.universityRepository.insert(universityData)
                     .then(HttpSuccess.sendCallback(response, "University successfuly created"))

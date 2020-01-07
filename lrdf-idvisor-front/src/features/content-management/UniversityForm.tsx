@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Title } from '../../components/CustomText';
 import { createuniversity } from './contentSlice';
 
-const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
+const UniversityForm: React.FC<RouteComponentProps> = ({ history }) => {
 
     const [name, setName] = useState<string>('')
     const [description, setDescription] = useState<string>('')
@@ -50,4 +50,4 @@ const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
     )
 }
 
-export default withRouter(SigninForm)
+export default withRouter(UniversityForm)
