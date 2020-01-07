@@ -22,6 +22,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Sign from './pages/Sign';
 import University from './pages/University';
+import WorkshopPage from './pages/Workshop';
 /* Theme variables */
 import './theme/variables.css';
 
@@ -36,7 +37,8 @@ const App: React.FC = () => (
         <Route path="/university" component={University} />
         <ProtectedRoute path="/university" component={Home} />
         <ProtectedRoute path="/chat" component={Chat} />
-        <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
+        <Route path="/workshop" component={WorkshopPage} />
+        <Route path="/" render={() => <Redirect to="/workshop" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

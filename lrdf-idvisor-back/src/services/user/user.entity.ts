@@ -77,7 +77,7 @@ export class Advisor {
   @JoinColumn()
   public user!: UserDB
   @ManyToMany(_ => Workshop, workshop => workshop.id)
-  @JoinColumn()
+  @JoinTable()
   public workshops!: Workshop[]
 
 }

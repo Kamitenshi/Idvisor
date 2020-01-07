@@ -12,6 +12,7 @@ import AuthController from './services/auth/auth.controller';
 import ChatController from './services/chat/chat.controller';
 import UniversityController from './services/university/university.controller';
 import UserController from './services/user/user.controller';
+import WorkshopController from './services/workshop/workshop.controller';
 import { env } from './utils/env';
 
 
@@ -45,10 +46,11 @@ class App {
 
     private initializeControllers() {
         const controllers = [
-            new UserController(),
             new AuthController(),
+            new ChatController(this.io),
             new UniversityController(),
-            new ChatController(this.io)
+            new UserController(),
+            new WorkshopController(),
         ];
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);

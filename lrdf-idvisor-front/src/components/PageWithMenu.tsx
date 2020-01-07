@@ -1,5 +1,5 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonSplitPane, IonTitle, IonToolbar } from '@ionic/react'
-import { chatbubbles, home, school, settings } from 'ionicons/icons'
+import { book, chatbubbles, home, school, settings } from 'ionicons/icons'
 import { Role } from 'lrdf-idvisor-model'
 import React from 'react'
 import { capitalize } from '../utils/string'
@@ -19,14 +19,19 @@ export interface AppPage {
 const PageWithMenu: React.FC<PageInterface> = ({ title, children }) => {
     const appPages: AppPage[] = [
         {
-            title: 'Home',
-            url: '/home',
+            title: 'Profile',
+            url: '/profile',
             icon: home
         },
         {
             title: 'Settings',
             url: '/settings',
             icon: settings
+        },
+        {
+            title: 'Atelier',
+            url: '/workshop',
+            icon: book
         },
         {
             title: 'University',

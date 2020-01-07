@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
 import { Advisor, Skill, Student } from "../user/user.entity"
 
 @Entity()
@@ -12,6 +12,5 @@ export class Workshop {
     @ManyToMany(_ => Student, student => student.user)
     public students!: Student[]
     @ManyToMany(_ => Skill, skill => skill.field)
-    @JoinColumn()
     public skills!: Skill[]
 }
