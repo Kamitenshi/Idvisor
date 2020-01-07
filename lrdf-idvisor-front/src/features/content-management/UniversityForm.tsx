@@ -2,6 +2,7 @@ import { IonButton, IonInput, IonItem, IonLabel, IonList, IonText } from '@ionic
 import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router-dom';
+import { Title } from '../../components/CustomText';
 import { createuniversity } from './contentSlice';
 
 const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
@@ -34,7 +35,7 @@ const SigninForm: React.FC<RouteComponentProps> = ({ history }) => {
 
     return (
         <form onSubmit={(e) => { e.preventDefault(); submit() }}>
-            <h1>Ajouter une Université</h1>
+            <Title>Ajouter une Université</Title>
             <IonList>
                 {createIonInput("Nom de l'université", setName)}
                 {createIonInput("Description de l'université", setDescription)}
