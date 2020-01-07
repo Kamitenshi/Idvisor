@@ -22,10 +22,10 @@ class UserDB {
   @Column()
   public password!: string
 
-  @OneToMany(type => Message, message => message.author, { onDelete: 'CASCADE' })
+  @OneToMany(type => Message, message => message.author)
   public messages!: Message[]
 
-  @ManyToMany(type => Conversation, conv => conv.users, { onDelete: 'CASCADE' })
+  @ManyToMany(type => Conversation, conv => conv.users)
   public conversations!: Conversation[]
 }
 
@@ -54,7 +54,7 @@ export class Field {
 
 @Entity()
 export class Student {
-  @OneToOne(type => UserDB, { primary: true })
+  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public user!: UserDB
 
@@ -73,7 +73,7 @@ export class Student {
 
 @Entity()
 export class Advisor {
-  @OneToOne(type => UserDB, { primary: true })
+  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
   @JoinColumn()
   public user!: UserDB
   @ManyToMany(_ => Workshop, workshop => workshop.id)
