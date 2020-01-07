@@ -22,10 +22,10 @@ class UserDB {
   @Column()
   public password!: string
 
-  @OneToMany(type => Message, message => message.author)
+  @OneToMany(_ => Message, message => message.author)
   public messages!: Message[]
 
-  @ManyToMany(type => Conversation, conv => conv.users)
+  @ManyToMany(_ => Conversation, conv => conv.users)
   public conversations!: Conversation[]
 }
 
@@ -38,7 +38,8 @@ export class Skill {
   public level!: number
   @ManyToMany(_ => Student, student => student.user)
   public students!: Student[]
-  @ManyToMany(_ => Workshop, w => w.id)
+  @ManyToMany(_ => Workshop, w => w.skills)
+  @JoinTable()
   public workshops!: Workshop[]
 }
 
@@ -54,29 +55,33 @@ export class Field {
 
 @Entity()
 export class Student {
-  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
+  @PrimaryGeneratedColumn()
+  public id!: number
+  @OneToOne(_ => UserDB, { onDelete: 'CASCADE' })
   @JoinColumn()
   public user!: UserDB
 
-  @ManyToMany(_ => Skill, skill => skill.field)
+  @ManyToMany(_ => Skill, skill => skill.students)
   @JoinTable()
   public skills!: Skill[]
 
-  @ManyToMany(_ => Field, cof => cof.id)
+  @ManyToMany(_ => Field, cof => cof.students)
   @JoinTable()
   public centerOfInterests!: Field[]
 
-  @ManyToMany(_ => Workshop, workshop => workshop.id)
+  @ManyToMany(_ => Workshop, workshop => workshop.students)
   @JoinTable()
   public workshops!: Workshop[]
 }
 
 @Entity()
 export class Advisor {
-  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
+  @PrimaryGeneratedColumn()
+  public id!: number
+  @OneToOne(_ => UserDB, { onDelete: 'CASCADE' })
   @JoinColumn()
   public user!: UserDB
-  @ManyToMany(_ => Workshop, workshop => workshop.id)
+  @ManyToMany(_ => Workshop, workshop => workshop.advisors)
   @JoinTable()
   public workshops!: Workshop[]
 
