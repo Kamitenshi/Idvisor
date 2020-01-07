@@ -1,11 +1,12 @@
 .title {
     font-size: 36px;
     display: block;
-    padding: 2px;
+    padding: 6px;
 }
 
 .subtitle {
     font-size: 24px;
     display: block;
-    padding: 1px;
+    padding: 4px;
+    color: rgb(27, 117, 26);
 }
