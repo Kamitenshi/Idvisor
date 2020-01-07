@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router-dom';
+import { Title } from '../../components/CustomText';
 import { signupStudent } from "./sessionSlice";
 
 const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
@@ -32,7 +33,7 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     return (<form onSubmit={(e) => { e.preventDefault(); submit() }}>
-        <h1>Création d'un utilisateur</h1>
+        <Title>Création du compte</Title>
         <IonList>
             <IonItem>
                 <IonLabel>Nom utilisateur</IonLabel>

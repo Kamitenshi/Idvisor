@@ -19,9 +19,11 @@ import ProtectedRoute from './features/session/ProtectedRoute';
 import Chat from './pages/Chat';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Search from './pages/Search';
 import Settings from './pages/Settings';
 import Sign from './pages/Sign';
-import University from './pages/University';
+import UniversityCreation from './pages/UniversityCreation';
+import UniversityPage from './pages/UniversityPage';
 import WorkshopPage from './pages/Workshop';
 /* Theme variables */
 import './theme/variables.css';
@@ -34,10 +36,11 @@ const App: React.FC = () => (
         <Route path="/sign/:type" component={Sign} />
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
-        <Route path="/university" component={University} />
-        <ProtectedRoute path="/university" component={Home} />
         <ProtectedRoute path="/chat" component={Chat} />
         <Route path="/workshop" component={WorkshopPage} />
+        <Route path="/search" component={Search} />
+        <Route path="/university" component={UniversityCreation} exact={true} />
+        <Route path="/university/page/:name" component={UniversityPage} />
         <Route path="/" render={() => <Redirect to="/workshop" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>

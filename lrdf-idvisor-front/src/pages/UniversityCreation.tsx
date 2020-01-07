@@ -4,10 +4,10 @@ import { RouteComponentProps } from 'react-router-dom'
 import PageWithMenu from '../components/PageWithMenu'
 import UniversityForm from '../features/content-management/UniversityForm'
 
-interface UniversityInterface extends RouteComponentProps { }
+interface UniversityInterface extends RouteComponentProps {
+}
 
-const University: React.FC<UniversityInterface> = () => {
-
+const UniversityCreation: React.FC<UniversityInterface> = () => {
     return (
         <PageWithMenu title='Université'>
             <IonContent>
@@ -18,4 +18,4 @@ const University: React.FC<UniversityInterface> = () => {
     )
 }
 
-export default University
+export default UniversityCreation

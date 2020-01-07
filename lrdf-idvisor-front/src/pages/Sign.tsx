@@ -25,7 +25,7 @@ const Sign: React.FC<SignInterface> = ({ match }) => {
     return (
         <IonPage>
             <IonContent>
-                <IonButton routerLink='/' color='secondary'>Retourner au menu principale</IonButton>
+                <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
                 {components.form}
                 {components.button}
             </IonContent>
