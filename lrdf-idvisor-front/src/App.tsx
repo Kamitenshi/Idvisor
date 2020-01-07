@@ -21,7 +21,8 @@ import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Settings from './pages/Settings';
 import Sign from './pages/Sign';
-import University from './pages/University';
+import UniversityCreation from './pages/UniversityCreation';
+import UniversityPage from './pages/UniversityPage';
 /* Theme variables */
 import './theme/variables.css';
 
@@ -34,7 +35,8 @@ const App: React.FC = () => (
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
         <Route path="/search" component={Search} />
-        <Route path="/university" component={University} />
+        <Route path="/university" component={UniversityCreation} exact={true} />
+        <Route path="/university/page/:name" component={UniversityPage} />
         <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
