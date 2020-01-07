@@ -36,7 +36,7 @@ class App {
         this.app.use(morgan("dev"));
         this.app.use(cors({
             credentials: true,
-            origin: 'http://' + env.FRONT_ADRESS //TODO: set in environment variable
+            origin: env.FRONT_ADRESS
         }));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
