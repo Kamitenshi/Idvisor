@@ -9,14 +9,25 @@
 
   tasks:
 
+    # Upload files
     - name: Upload docker-compose .env file
       copy:
-        src: /home/jigsaw/SIGL/NLPF/Idvisor/terraform/.env
+        src: /var/lib/jenkins/workspace/deploy-ec2-and-configure-project/terraform/.env
+        dest: ~/
+    - name: Upload docker-compose .envback file
+      copy:
+        src: /var/lib/jenkins/workspace/deploy-ec2-and-configure-project/terraform/.envback
+        dest: ~/
+    - name: Upload docker-compose .envfront file
+      copy:
+        src: /var/lib/jenkins/workspace/deploy-ec2-and-configure-project/terraform/.envfront
         dest: ~/
     - name: Upload docker-compose files
       copy:
-        src: /home/jigsaw/SIGL/NLPF/Idvisor/terraform/docker-compose.yml
+        src: /home/ubuntu/Idvisor/terraform/docker-compose.yml
         dest: ~/
+
+    # Stop services
     - name: Tear down existing services
       docker_compose:
         remove_orphans: yes

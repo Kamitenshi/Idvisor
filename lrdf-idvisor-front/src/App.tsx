@@ -16,6 +16,7 @@ import '@ionic/react/css/typography.css';
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import ProtectedRoute from './features/session/ProtectedRoute';
+import Chat from './pages/Chat';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
@@ -34,6 +35,7 @@ const App: React.FC = () => (
         <Route path="/sign/:type" component={Sign} />
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
+        <ProtectedRoute path="/chat" component={Chat} />
         <Route path="/search" component={Search} />
         <Route path="/university" component={UniversityCreation} exact={true} />
         <Route path="/university/page/:name" component={UniversityPage} />
