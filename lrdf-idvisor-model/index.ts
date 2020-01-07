@@ -7,3 +7,11 @@ export interface UserData {
     username: string
     email: string
 }
+
+export type University = {
+    name: string
+    description: string
+    address: string
+    city: string
+    postalCode: string
+}

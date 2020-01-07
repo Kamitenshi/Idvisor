@@ -1,4 +1,5 @@
 import express from "express";
+import { University } from "lrdf-idvisor-model";
 import { getRepository } from 'typeorm';
 import { isAdvisor } from "../../middleware/auth";
 import modelValidatorMiddleware from "../../middleware/model.validator";
@@ -19,12 +20,21 @@ class UniversityController implements Controller {
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, this.getAllUniversities);
         this.router.post(`${this.path}/add`, modelValidatorMiddleware(CreatingUniversity), isAdvisor, this.addUniversity);
+        this.router.get(`${this.path}/get`, this.getUniversity);
     }
 
     private getAllUniversities = async (request: express.Request, response: express.Response) => {
         this.universityRepository.find({ select: ['name'] })
             .then(HttpSuccess.sendCallback(response, "All universities gathered"))
             .catch(HttpException.sendCallback(response, 500, "All universities could not be gathered"));
+    }
+
+    private getUniversity = async (request: express.Request, response: express.Response) => {
+        const university: University = request.query
+        this.universityRepository.findOne(name)
+        this.universityRepository.findOne(university.name)
+            .then(HttpSuccess.sendCallback(response, "University found"))
+            .catch(HttpException.sendCallback(response, 500, "Couldn't find the university"));
     }
 
     private addUniversity = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
