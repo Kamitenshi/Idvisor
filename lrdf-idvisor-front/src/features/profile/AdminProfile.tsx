@@ -30,7 +30,7 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         return async function apply() {
             const query = { email: user.user.email }
             await deleteData('user', 'delete', query)
-            //TODO: refresh list when user is deleted 
+            setRefresh(true)
         }
     }
 

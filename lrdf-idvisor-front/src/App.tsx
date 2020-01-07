@@ -24,6 +24,7 @@ import Settings from './pages/Settings';
 import Sign from './pages/Sign';
 import UniversityCreation from './pages/UniversityCreation';
 import UniversityPage from './pages/UniversityPage';
+import WorkshopPage from './pages/Workshop';
 /* Theme variables */
 import './theme/variables.css';
 
@@ -39,7 +40,8 @@ const App: React.FC = () => (
         <Route path="/search" component={Search} />
         <Route path="/university" component={UniversityCreation} exact={true} />
         <Route path="/university/page/:name" component={UniversityPage} />
-        <Route path="/" render={() => <Redirect to="/home" />} exact={true} />
+        <Route path="/workshop" component={WorkshopPage} />
+        <Route path="/" render={() => <Redirect to="/workshop" />} exact={true} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

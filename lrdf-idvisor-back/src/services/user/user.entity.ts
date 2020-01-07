@@ -1,6 +1,7 @@
 import { IsEmail, IsString } from 'class-validator'
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Conversation, Message } from '../chat/chat.entity'
+import { Workshop } from '../workshop/workshop.entity'
 
 export type Role = "admin" | "student" | "advisor"
 
@@ -26,6 +27,59 @@ class UserDB {
 
   @ManyToMany(type => Conversation, conv => conv.users)
   public conversations!: Conversation[]
+}
+
+@Entity()
+export class Skill {
+  @OneToOne(_ => Field, { primary: true })
+  @JoinColumn()
+  public field!: Field
+  @Column()
+  public level!: number
+  @ManyToMany(_ => Student, student => student.user)
+  public students!: Student[]
+  @ManyToMany(_ => Workshop, w => w.id)
+  public workshops!: Workshop[]
+}
+
+@Entity()
+export class Field {
+  @PrimaryGeneratedColumn()
+  public id!: number
+  @Column()
+  public name!: string
+  @ManyToMany(_ => Student, student => student.user)
+  public students!: Student[]
+}
+
+@Entity()
+export class Student {
+  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
+  @JoinColumn()
+  public user!: UserDB
+
+  @ManyToMany(_ => Skill, skill => skill.field)
+  @JoinTable()
+  public skills!: Skill[]
+
+  @ManyToMany(_ => Field, cof => cof.id)
+  @JoinTable()
+  public centerOfInterests!: Field[]
+
+  @ManyToMany(_ => Workshop, workshop => workshop.id)
+  @JoinTable()
+  public workshops!: Workshop[]
+}
+
+@Entity()
+export class Advisor {
+  @OneToOne(type => UserDB, { primary: true, onDelete: 'CASCADE' })
+  @JoinColumn()
+  public user!: UserDB
+  @ManyToMany(_ => Workshop, workshop => workshop.id)
+  @JoinTable()
+  public workshops!: Workshop[]
+
 }
 
 export class RegisteringUser {
