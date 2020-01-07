@@ -1,6 +1,7 @@
 import { IonApp, IonButton, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { Subtitle, Title } from '../components/CustomText'
 import PageWithMenu from '../components/PageWithMenu'
 import { getData } from '../utils/httpclient'
 
@@ -60,7 +61,7 @@ const Search: React.FC<SearchInterface> = () => {
         if (showFilters) {
             return (
                 <>
-                    <p>Liste des filtres</p>
+                    <Subtitle >Liste des filtres</Subtitle>
                     <IonList>
                         <IonItem>
                             <IonLabel>Ville</IonLabel>
@@ -98,7 +99,7 @@ const Search: React.FC<SearchInterface> = () => {
                     <IonSearchbar onInput={(e) => setSearchedValue(((e.target as any).value) as string)} placeholder="Rechercher"></IonSearchbar>
                     <IonButton onClick={() => setShowFilters(!showFilters)}>Options</IonButton>
                     {showFiltersModule()}
-                    <h1>Résultats de la recherche</h1>
+                    <Title>Résultats de la recherche</Title>
                     {displayUniversities()}
                 </IonContent>
             </PageWithMenu >
