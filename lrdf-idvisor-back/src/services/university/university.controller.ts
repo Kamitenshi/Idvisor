@@ -31,7 +31,6 @@ class UniversityController implements Controller {
 
     private getUniversity = async (request: express.Request, response: express.Response) => {
         const university: University = request.query
-        this.universityRepository.findOne(name)
         this.universityRepository.findOne(university.name)
             .then(HttpSuccess.sendCallback(response, "University found"))
             .catch(HttpException.sendCallback(response, 500, "Couldn't find the university"));
