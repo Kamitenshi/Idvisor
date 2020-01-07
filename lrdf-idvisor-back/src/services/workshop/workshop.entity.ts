@@ -7,10 +7,10 @@ export class Workshop {
     public id!: number
     @Column()
     public name!: string
-    @ManyToMany(_ => Advisor, advisor => advisor.user)
+    @ManyToMany(_ => Advisor, advisor => advisor.workshops)
     public advisors!: Advisor[]
-    @ManyToMany(_ => Student, student => student.user)
+    @ManyToMany(_ => Student, student => student.workshops)
     public students!: Student[]
-    @ManyToMany(_ => Skill, skill => skill.field)
+    @ManyToMany(_ => Skill, skill => skill.workshops)
     public skills!: Skill[]
 }

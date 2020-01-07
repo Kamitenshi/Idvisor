@@ -27,6 +27,7 @@ interface WorkshopPageInterface {
 
 interface Workshop {
     name: string
+    id: number
 }
 
 const WorkshopPage: React.FC<WorkshopPageInterface> = ({ user }) => {
@@ -52,7 +53,8 @@ const WorkshopPage: React.FC<WorkshopPageInterface> = ({ user }) => {
             setRefresh(true)
         }
     }
-    const displayedWorkshops = workshops.map((workshop: Workshop, key: number) => <IonItem key={key}><IonLabel>{workshop.name}</IonLabel></IonItem>)
+
+    const displayedWorkshops = workshops.map((workshop: Workshop, key: number) => <IonItem key={key} routerLink={`/workshop/${workshop.name}/${workshop.id}`} button={true}><IonLabel>{workshop.name}</IonLabel></IonItem>)
     return (
         <PageWithMenu title={"Ateliers"}>
             <IonInput placeholder="Nom du nouvel atelier" type='text' value={workshopName}

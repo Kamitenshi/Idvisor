@@ -6,7 +6,7 @@ import { isAdmin, isUser } from '../../middleware/auth';
 import Controller from '../../utils/controller';
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
-import UserDB from './user.entity';
+import UserDB, { Student } from './user.entity';
 
 
 
@@ -15,6 +15,7 @@ class UserController implements Controller {
     public path = '/user'
     public router = express.Router()
     private userRepository = getRepository(UserDB)
+    private studentRepo = getRepository(Student)
 
     constructor() {
         this.initializeRoutes();
@@ -23,8 +24,15 @@ class UserController implements Controller {
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, isAdmin, this.getAllUsers)
         this.router.get(`${this.path}/chat`, this.getAllChat)
+        this.router.get(`${this.path}/students`, this.getAllStudents)
         this.router.delete(`${this.path}/delete`, isAdmin, this.deleteUser)
         this.router.patch(`${this.path}/modify`, isUser, this.modifySettings) // TODO: Check user format
+    }
+
+    private getAllStudents = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const students = await this.studentRepo.find({ relations: ["user"] })
+        const result = students.map(student => ({ id: student.id, username: student.user.username }))
+        HttpSuccess.send(response, "Could gather all students", result)
     }
 
     private getAllChat = (request: express.Request, response: express.Response, next: express.NextFunction) => {
