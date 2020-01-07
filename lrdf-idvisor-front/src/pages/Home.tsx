@@ -1,5 +1,6 @@
 import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonPage, IonRow, IonText, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
+import { Subtitle, Text, Title } from '../components/CustomText';
 import { appName } from '../constants/name';
 import './Home.css';
 
@@ -34,6 +35,13 @@ const HomePage: React.FC<HomeInterface> = () => {
             <IonCol id='title-cell'>
               <IonText color='primary' class='title' id='main-title'>Idvisor</IonText>
               <IonText color='secondary' class='title' id='subtitle'>Trouver sa formation dans le numérique</IonText>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <Title>Un titre</Title>
+              <Subtitle>Un sous-titre</Subtitle>
+              <Text>Un texte</Text>
             </IonCol>
           </IonRow>
         </IonGrid>
