@@ -26,6 +26,7 @@ class CurriculumController implements Controller {
 
     private addCurriculum = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const curriculumData: CurriculumDB = { ...request.body };
+        console.log("bim")
         try {
             this.curriculumRepository.insert(curriculumData)
                 .then(HttpSuccess.sendCallback(response, "Curriculum successfuly created"))

@@ -13,6 +13,9 @@ export class CurriculumDB {
     @Column()
     public description!: string
 
+    @Column()
+    public url!: string
+
     @ManyToOne(_ => UniversityDB, university => university.name)
     public university!: UniversityDB
 }

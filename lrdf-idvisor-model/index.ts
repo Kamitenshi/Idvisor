@@ -14,6 +14,7 @@ export type University = {
     address: string
     city: string
     postalCode: string
+    url: string
     curriculums: Curriculum[]
 }
 
@@ -22,5 +23,6 @@ export type Curriculum = {
     name: string
     description: string
     university: University
+    url: string
     skills: string[]
 }

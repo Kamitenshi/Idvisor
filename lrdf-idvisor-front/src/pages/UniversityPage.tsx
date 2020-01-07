@@ -1,5 +1,5 @@
 import { IonButton, IonContent, IonInput, IonItem, IonLabel, IonList, IonRow, IonText } from '@ionic/react'
-import { Role, University } from 'lrdf-idvisor-model'
+import { Curriculum, Role, University } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router-dom'
@@ -23,57 +23,70 @@ const dispatchToProps = (state: RootState) => ({
 const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
     const [name, setName] = useState(match.params.name)
     const [university, setUniversity] = useState<University>()
+    const [refresh, setRefresh] = useState<number>(0)
+    const [listCurriculums, setListCurriculums] = useState<JSX.Element>()
 
     useEffect(() => {
         async function getUniversity(name: string) {
             return ((await (await getData('university', 'get', { name })).data.result) as University)
         }
         getUniversity(name).then(res => setUniversity(res))
-    }, [name])
+    }, [name, refresh])
 
-    const editComponents = (role: Role) => {
-        if (role === "advisor") {
-            return <IonButton onClick={() => { console.log("fixme") }}>Modifier le profil de l'université</IonButton>
-        }
-    }
+    useEffect(() => { setListCurriculums(calculateList()); console.log("pas encore............;") }, [university])
 
-    const listCurriculums = () => {
+    const calculateList = () => {
         if (university) {
+            console.log(university.curriculums)
             return (
                 <IonList>
-                    {university.curriculums.map((curriculum) => {
+                    {university.curriculums.map((curriculum: Curriculum) => {
                         return (
-                            <IonItem routerLink={'curriculum/page/' + curriculum.name}>
+                            <IonItem routerLink={university.name} onClick={() => openlink(curriculum)}>
                                 <IonRow>
-                                    {curriculum.name}
+                                    {curriculum.name} : {curriculum.description}
                                 </IonRow></IonItem>
                         )
                     })}
                 </IonList>
             )
         }
+        else {
+            return <Text>Aucune formation renseignée pour le moment !</Text>
+        }
     }
 
+
+    const editComponents = (role: Role) => {
+
+    }
+
+    const openlink = (curriculum: Curriculum) => {
+        let url = curriculum.url.search("www.") === -1 ? "www." + curriculum.url : curriculum.url
+        url = curriculum.url.search("http://") === -1 ? "http://" + curriculum.url : curriculum.url
+        window.open(url, "_blank")
+    }
 
     const CurriculumForm = () => {
         const [name, setName] = useState<string>('')
         const [description, setDescription] = useState<string>('')
+        const [url, setUrl] = useState<string>('')
         const [error, setError] = useState('')
         const [success, setSuccess] = useState('')
 
         const createIonInput = (label: string, setter: React.Dispatch<React.SetStateAction<string>>) => {
             return (
                 <IonItem>
-                    <IonLabel>{label}</IonLabel>
-                    <IonInput type="text" autofocus={true} required={true}
-                        onIonInput={(e) => setter((e.target as HTMLInputElement).value)} />
+                    <IonLabel position="stacked">{label}</IonLabel>
+                    <IonInput required={true} onIonInput={(e) => setter((e.target as HTMLInputElement).value)} />
                 </IonItem>
             )
         }
 
-        const submit = () => {
+        async function submit() {
             if (university) {
-                createCurriculum(name, description, university, setError, setSuccess)
+                await createCurriculum(name, description, url, university, setError, setSuccess)
+                setRefresh(refresh + 1)
             }
         }
 
@@ -85,6 +98,7 @@ const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
                     <IonList>
                         {createIonInput("Nom de la formation", setName)}
                         {createIonInput("Description de la formation", setDescription)}
+                        {createIonInput("Lien web vers la formation", setUrl)}
                         {error ? <IonText color='danger'><IonLabel>{error}</IonLabel></IonText> : null}
                         {success ? <IonText color='success'><IonLabel>{success}</IonLabel></IonText> : null}
                     </IonList>
@@ -98,6 +112,7 @@ const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
 
     const universityInformation = university ? (<div>
         <Text>Cette université est localisée dans la ville de {university.city} ({university.postalCode}), à l'adresse : {university.address} </Text> <br></br><br></br>
+        <Text>Site web de l'université : {university.url}</Text><br></br><br></br>
         <Text>Description : {university.description}</Text><br></br></div>)
         : null
 
@@ -110,7 +125,7 @@ const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
                 {universityInformation}
                 {CurriculumForm()}
                 <Subtitle>Liste des formations proposées</Subtitle>
-                {listCurriculums()}
+                {listCurriculums}
             </IonContent>
         </PageWithMenu>
     )

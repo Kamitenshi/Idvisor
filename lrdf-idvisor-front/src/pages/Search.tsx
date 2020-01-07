@@ -41,12 +41,11 @@ const Search: React.FC<SearchInterface> = () => {
             return (
                 <IonGrid>
                     <IonList>
-                        {searchResults.map((university) => {
-                            console.log(university)
+                        {searchResults.map((result) => {
                             return (
-                                <IonItem routerLink={'university/page/' + university.name}>
+                                <IonItem routerLink={'university/page/' + result.name}>
                                     <IonRow>
-                                        <IonCol><div> {university.name}</div></IonCol>
+                                        <IonCol><div> {result.name}</div></IonCol>
                                     </IonRow>
                                 </IonItem>
                             )
@@ -64,14 +63,6 @@ const Search: React.FC<SearchInterface> = () => {
                 <>
                     <Subtitle >Liste des filtres</Subtitle>
                     <IonList>
-                        <IonItem>
-                            <IonLabel>Ville</IonLabel>
-                            <IonSelect multiple={true}>
-                                <IonSelectOption value="caen">Caen</IonSelectOption>
-                                <IonSelectOption value="paris1">Paris 1er</IonSelectOption>
-                                <IonSelectOption value="paris12">Paris 12e</IonSelectOption>
-                            </IonSelect>
-                        </IonItem>
                         <IonItem>
                             <IonLabel>Type</IonLabel>
                             <IonSelect multiple={true}>
