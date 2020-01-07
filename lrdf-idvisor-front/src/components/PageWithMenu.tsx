@@ -24,7 +24,12 @@ const PageWithMenu: React.FC<PageInterface> = ({ title, children }) => {
             icon: home
         },
         {
-            title: 'Université',
+            title: 'Rechercher',
+            url: '/search',
+            icon: school,
+        },
+        {
+            title: 'University',
             url: '/university',
             icon: school,
             role: 'advisor'

@@ -6,7 +6,6 @@
     "start": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
   },
   "dependencies": {
-    "@types/socket.io": "^2.1.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "class-transformer": "^0.2.3",
@@ -16,12 +15,11 @@
     "envalid": "^6.0.0",
     "express": "~4.16.1",
     "jsonwebtoken": "^8.5.1",
-    "lrdf-idvisor-model": "^1.0.0",
     "morgan": "^1.9.1",
     "pg": "^7.14.0",
     "reflect-metadata": "^0.1.13",
-    "socket.io": "^2.3.0",
-    "typeorm": "^0.2.21"
+    "typeorm": "^0.2.21",
+    "lrdf-idvisor-model": "^1.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",

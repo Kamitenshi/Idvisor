@@ -16,7 +16,7 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
         async function getAllUsers() {
             setRefresh(false)
             const result = await (await getData('user', 'all')).data.result
-            setUsers(result.map((user: User): UserAccount => { return { user: { email: user.email, username: user.username, id: user.id }, role: user.role } }))
+            setUsers(result.map((user: User): UserAccount => { return { user: { email: user.email, username: user.username }, role: user.role } }))
         }
 
         getAllUsers()
@@ -37,15 +37,16 @@ const AdminProfilePage: React.FC<AdminProfilePageInterface> = () => {
     const displayUsers = (userAccounts: UserAccount[]) => {
         const apply = (userAccount: UserAccount, index: number) => {
             return (
-                <IonRow key={index}>
-                    <IonCol>{userAccount.user.email}</IonCol>
-                    <IonCol>{userAccount.user.username}</IonCol>
-                    <IonCol>{userAccount.role}</IonCol>
-                    <IonCol>
-                        <IonButton color='danger' onClick={deleteUser(userAccount)}>Supprimer</IonButton>
-                    </IonCol>
-                </IonRow>
-            )
+                <>
+                    <IonRow>
+                        <IonCol>{userAccount.user.email}</IonCol>
+                        <IonCol>{userAccount.user.username}</IonCol>
+                        <IonCol>{userAccount.role}</IonCol>
+                        <IonCol>
+                            <IonButton color='danger' onClick={deleteUser(userAccount)}>Supprimer</IonButton>
+                        </IonCol>
+                    </IonRow>
+                </>)
         }
 
         return mapInGrid(['E-mail', 'Nom utilisateur', 'Role', ''], userAccounts, apply)

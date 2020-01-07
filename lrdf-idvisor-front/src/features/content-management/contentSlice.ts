@@ -2,6 +2,10 @@ import { postData } from "../../utils/httpclient"
 
 export const createuniversity = async (
     name: string,
+    description: string,
+    address: string,
+    city: string,
+    postalCode: string,
     redirect: () => void,
     setError: (msg: string) => void,
     setSuccess: (msg: string) => void
@@ -9,8 +13,7 @@ export const createuniversity = async (
     setSuccess("")
     setError("")
     try {
-        console.log("front send to back with name: ", name)
-        await postData('university', 'add', { name })
+        await postData('university', 'add', { name, description, address, city, postalCode })
         setSuccess("Successfully created university with name: ".concat(name))
         redirect()
     }

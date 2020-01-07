@@ -18,7 +18,7 @@ class UniversityController implements Controller {
 
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, this.getAllUniversities);
-        this.router.post(`${this.path}/add`, isAdvisor, modelValidatorMiddleware(CreatingUniversity), this.addUniversity);
+        this.router.post(`${this.path}/add`, modelValidatorMiddleware(CreatingUniversity), isAdvisor, this.addUniversity);
     }
 
     private getAllUniversities = async (request: express.Request, response: express.Response) => {

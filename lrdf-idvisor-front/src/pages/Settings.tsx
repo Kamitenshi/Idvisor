@@ -33,9 +33,9 @@ const SettingsPage: React.FC<RouteComponentProps & SettingsPage> = ({ user, hist
     const [type, setType] = useState<TextFieldTypes>("text")
     const [name, setName] = useState('')
 
-    const modifyEmail = () => { setField('e-mail'); setType('email'); setName('email') }
-    const modifyPassword = () => { setField('mot de passe'); setType('password'); setName('password') }
-    const modifyUsername = () => { setField("nom d'utilisateur"); setType('text'); setName('username') }
+    const modifyEmail = () => { setField('email'); setType('email'); setName('email') }
+    const modifyPassword = () => { setField('password'); setType('password'); setName('password') }
+    const modifyUsername = () => { setField('username'); setType('text'); setName('username') }
 
 
     let inputForm = null

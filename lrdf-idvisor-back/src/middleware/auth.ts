@@ -3,12 +3,11 @@ import express from 'express';
 import { getRepository } from 'typeorm';
 import UserDB, { Role } from '../services/user/user.entity';
 import { HttpException } from "../utils/HttpReply";
-import { checkToken, cookieName } from "../utils/jwt";
+import { checkToken } from "../utils/jwt";
 
 function isAuthorized(authorizedRole: Role, request: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const cookie = request.cookies[cookieName];
-        const token = checkToken(cookie);
+        const token = checkToken(request);
         const role = token.role;
         if (role == authorizedRole) {
             next();
