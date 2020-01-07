@@ -7,12 +7,14 @@ import Controller from "../../utils/controller";
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from "../../utils/HttpReply";
 import { createToken, deleteToken } from '../../utils/jwt';
-import UserDB, { LoggingUser, RegisteringUser, Role } from "../user/user.entity";
+import UserDB, { Advisor, LoggingUser, RegisteringUser, Role, Student } from "../user/user.entity";
 
 class AuthController implements Controller {
     public path = '/auth';
     public router = express.Router();
     private userRepository = getRepository(UserDB)
+    private studentRepo = getRepository(Student)
+    private advisorRepo = getRepository(Advisor)
 
     constructor() {
         this.initializeRoutes();
@@ -58,10 +60,18 @@ class AuthController implements Controller {
             if (found === undefined) {
                 const salt = await genSalt(env.SALT_ROUND);
                 const hashedPassword = await hash(userData.password, salt);
-                await this.userRepository.insert({
+                const user = await this.userRepository.save({
                     ...userData,
                     password: hashedPassword
                 })
+
+                //TODO: refactor this part of the code
+                if (role === 'student') {
+                    this.studentRepo.save({ user: { id: user.id } })
+                }
+                else if (role === 'advisor') {
+                    this.advisorRepo.save({ user: { id: user.id } })
+                }
                 HttpSuccess.send(response, "User successfuly created",
                     { username: userData.username, email: userData.email, role: userData.role, id: userData.id })
             }
