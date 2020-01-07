@@ -15,3 +15,11 @@ export type University = {
     city: string
     postalCode: string
 }
+
+export type Curriculum = {
+    id: number
+    name: string
+    description: string
+    university: University
+    skills: string[]
+}

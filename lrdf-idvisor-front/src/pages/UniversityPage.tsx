@@ -1,7 +1,7 @@
-import { IonButton, IonContent, IonItem, IonList, IonRow } from '@ionic/react'
-import { connect } from 'http2'
+import { IonButton, IonContent } from '@ionic/react'
 import { Role, University } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router-dom'
 import { RootState } from '../app/rootReducer'
 import { Subtitle, Text, Title } from '../components/CustomText'
@@ -15,7 +15,6 @@ interface UniversityInterface extends RouteComponentProps<{
     role: Role
 }
 
-
 const dispatchToProps = (state: RootState) => ({
     role: getRole(state)
 })
@@ -23,11 +22,12 @@ const dispatchToProps = (state: RootState) => ({
 const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
     const [name, setName] = useState(match.params.name)
     const [university, setUniversity] = useState<University>()
-    const [curriculumList, setCurriculumList] = useState<Curriculum[]>([])
+
+    //const [curriculumList, setCurriculumList] = useState<Curriculum[]>([])
 
     useEffect(() => {
         async function getUniversity(name: string) {
-            return ((await (await getData('university', 'all')).data.result) as University)
+            return ((await (await getData('university', 'get')).data.result) as University)
         }
         getUniversity(name).then(res => setUniversity(res))
     }, [name])
@@ -38,29 +38,37 @@ const UniversityPage: React.FC<UniversityInterface> = ({ role, match }) => {
         }
     }
 
+    const listCurriculums = () => {
+
+        /* return (
+             <IonList>
+                 {curriculumList.map((curriculum) => {
+                     return (
+                         <IonItem routerLink={'curriculum/page/' + curriculum.name}>
+                             <IonRow>
+                                 {curriculum.name}
+                             </IonRow></IonItem>
+                     )
+                 })}
+             </IonList>
+         )*/
+    }
+
+    const universityInformation = university ? (<div>
+        <Text>Cette université est localisée dans la ville de {university.city} ({university.postalCode}), à l'adresse : {university.address} </Text> <br></br><br></br>
+        <Text>Description : {university.description}</Text><br></br></div>)
+        : null
+
     return (
         <PageWithMenu title="Détails de l'université">
             <IonContent>
                 <IonButton routerLink='/' color='secondary'>Retourner au menu principal</IonButton>
                 {editComponents(role)}
-                <Title>{name}</Title>
-                <Text>Cette université est localisée dans la ville de {university?.city} ({university?.postalCode}), à l'adresse : {university?.address} </Text>
-                <Text>Description : {university?.description}</Text>
+                <Title>Page de l'université{name}</Title>
+                {universityInformation}
                 <Subtitle>Liste des formations proposées</Subtitle>
-                <IonList>
-                    {curriculumList.map((curriculum) => {
-                        return (
-                            <IonItem routerLink={'curriculum/page/' + curriculum.name}>
-                                <IonRow>
-                                    {curriculum.name}
-                                </IonRow></IonItem>
-                        )
-                    })}
-                </IonList>
             </IonContent>
         </PageWithMenu>
     )
-
-
 }
 export default connect(dispatchToProps)(UniversityPage)

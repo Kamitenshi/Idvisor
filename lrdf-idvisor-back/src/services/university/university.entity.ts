@@ -1,8 +1,10 @@
 import { IsString } from 'class-validator'
-import { Column, Entity, PrimaryColumn } from "typeorm"
+import { Curriculum } from 'lrdf-idvisor-model'
+import { CurriculumDB } from 'services/curriculum/curriculum.entity'
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
 
 @Entity()
-class UniversityDB {
+export class UniversityDB {
     @PrimaryColumn()
     public name!: string
 
@@ -17,8 +19,11 @@ class UniversityDB {
 
     @Column()
     public postalCode!: string
-}
 
+    @OneToMany(_ => CurriculumDB, curriculum => curriculum.id)
+    public curriculums!: Curriculum[]
+
+}
 
 export class CreatingUniversity {
     @IsString()
