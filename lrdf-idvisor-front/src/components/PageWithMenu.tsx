@@ -19,26 +19,26 @@ export interface AppPage {
 const PageWithMenu: React.FC<PageInterface> = ({ title, children }) => {
     const appPages: AppPage[] = [
         {
-            title: 'Home',
-            url: '/home',
+            title: 'Profil',
+            url: '/profile',
             icon: home
         },
         {
-            title: 'Settings',
-            url: '/settings',
-            icon: settings
-        },
-        {
-            title: 'University',
+            title: 'Université',
             url: '/university',
             icon: school,
             role: 'advisor'
         },
         {
-            title: 'Chat',
+            title: 'Messagerie',
             url: '/chat',
             icon: chatbubbles
-        }
+        },
+        {
+            title: 'Paramètres',
+            url: '/settings',
+            icon: settings
+        },
     ];
     return (
         <IonSplitPane contentId='main'>

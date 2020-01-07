@@ -22,7 +22,7 @@ const Profile: React.FC<ProfileInterface> = ({ username, role }) => {
     }
     return (
         <PageWithMenu title='Profile'>
-            <h1>Bienvenu sur votre profile {username}</h1>
+            <h1>Bienvenu sur votre profil {username}</h1>
             {content()}
         </PageWithMenu>
     )
