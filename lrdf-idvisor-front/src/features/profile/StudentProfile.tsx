@@ -16,6 +16,8 @@ interface Recommandation {
 }
 
 interface Interest {
+    id: number
+    name: string
 
 }
 
@@ -30,19 +32,23 @@ const StudentProfilePage: React.FC<StudentProfileInterface> = ({ user }) => {
 
     useEffect(() => {
         const init = async () => {
-            const response = (await getData('workshop', 'student/workshops', { cookie: getToken() })).data
+            let response = (await getData('workshop', 'student/workshops', { cookie: getToken() })).data
             const { workshops } = response.result
             setWorkshops(workshops)
+            response = (await getData('user', 'students/interest', { cookie: getToken() })).data
+            const interests = response.result
+            setInterests(interests)
         }
 
         init()
     }, [])
 
     const displayedWorkshop = workshops ? workshops.map((workshop, key) => <IonItem key={key}><IonLabel>{workshop.name}</IonLabel></IonItem>) : null
+    const displayedInterests = interests ? interests.map((interest, key) => <IonItem key={key}><IonLabel>{interest.name}</IonLabel></IonItem>) : null
     return (
         <>
-            <Subtitle>Recommendations</Subtitle>
             <Subtitle>Centres d'intérêts</Subtitle>
+            <IonList>{displayedInterests}</IonList>
             <Subtitle>Ateliers en cours</Subtitle>
             <IonList>{displayedWorkshop}</IonList>
         </>

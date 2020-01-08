@@ -23,7 +23,7 @@ const SignupForm: React.FC<RouteComponentProps> = ({ history }) => {
     }
 
     const redirect = () => {
-        history.push('/profile')
+        history.push('/welcome')
     }
 
     const submit = () => {
