@@ -24,8 +24,9 @@ class WorkshopController implements Controller {
         this.router.get(`${this.path}/all`, this.getAllWorkshops)
         this.router.get(`${this.path}/information`, this.getWorkshopInformation)
         this.router.post(`${this.path}/create/workshop`, this.createWorkshop)
-        this.router.post(`${this.path}/add/skill`, this.createSkill)
+        this.router.post(`${this.path}/create/skill`, this.createSkill)
         this.router.post(`${this.path}/add/student`, this.addStudent)
+        this.router.post(`${this.path}/add/skill`, this.addSkill)
     }
 
     private addStudent = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -33,6 +34,16 @@ class WorkshopController implements Controller {
         let workshop = await this.workshopRepo.findOne(workshopId)
         if (workshop) {
             workshop.students = idStudents.map(student => ({ id: student }))
+            this.workshopRepo.save(workshop)
+        }
+        HttpSuccess.send(response, "Student added")
+    }
+
+    private addSkill = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const { idSkills, workshopId } = request.body
+        let workshop = await this.workshopRepo.findOne(workshopId)
+        if (workshop) {
+            workshop.skills = idSkills.map(id => ({ id }))
             this.workshopRepo.save(workshop)
         }
     }
@@ -45,13 +56,14 @@ class WorkshopController implements Controller {
 
     private getWorkshopInformation = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const { id } = request.body
-        const workshop = await this.workshopRepo.findOne(id, { relations: ["advisors", "advisors.user", "skills", "students", "students.user"] })
+        const workshop = await this.workshopRepo.findOne(id, { relations: ["advisors", "advisors.user", "skills", "skills.field", "students", "students.user"] })
 
         if (workshop) {
             const { students, skills, advisors } = workshop
             const advisorsUsernames = advisors.map(adv => ({ username: adv.user.username }))
             const studentUsernames = students.map(stu => ({ username: stu.user.username }))
-            HttpSuccess.send(response, "Workshop information retrieved", { students: studentUsernames, skills, advisors: advisorsUsernames })
+            const skillsResult = skills.map(skill => ({ id: skill.field, level: skill.level }))
+            HttpSuccess.send(response, "Workshop information retrieved", { students: studentUsernames, skills: skillsResult, advisors: advisorsUsernames })
         }
         else {
             next(new HttpException(403, "Workshop with id: " + id + " does not exist"))

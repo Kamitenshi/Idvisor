@@ -33,6 +33,8 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
             setSkills(skills)
             setAdvisors(advisors)
             setRefresh(false)
+            console.log('Coucou');
+
         }
         initState()
     }, [refresh])
@@ -53,7 +55,7 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
         getAllStudents()
     }, [])
 
-    const displayedAllStudents = allStudents ? allStudents.map(student => <IonSelectOption value={student.id}> {student.username}</IonSelectOption >)
+    const displayedAllStudents = allStudents ? allStudents.map((student, key) => <IonSelectOption key={key} value={student.id}> {student.username}</IonSelectOption >)
         : null
 
     const handleSelectStudent = async (idStudents: any) => {
