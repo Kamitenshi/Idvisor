@@ -1,32 +1,56 @@
-import React from 'react'
+import { IonItem, IonLabel, IonList } from '@ionic/react'
+import { UserData } from 'lrdf-idvisor-model'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../../app/rootReducer'
-import { displayList } from '../../utils/list'
-import { getUsername } from '../session/sessionSlice'
-import { getInterests, getRecommandations, getSkills, StudentProfile } from './profileSlice'
+import { Subtitle } from '../../components/CustomText'
+import { getData, getToken } from '../../utils/httpclient'
+import { getUser } from '../session/sessionSlice'
 
-type StudentProfileInterface = {
-} & StudentProfile
+interface StudentProfileInterface {
+    user: UserData
+}
 
+interface Recommandation {
 
-const StudentProfilePage: React.FC<StudentProfileInterface> = ({ recommandations, interests, skills }) => {
+}
+
+interface Interest {
+
+}
+
+interface Workshop {
+    name: string
+}
+
+const StudentProfilePage: React.FC<StudentProfileInterface> = ({ user }) => {
+    const [recommandations, setRecommandations] = useState<Recommandation[]>()
+    const [interests, setInterests] = useState<Interest[]>()
+    const [workshops, setWorkshops] = useState<Workshop[]>()
+
+    useEffect(() => {
+        const init = async () => {
+            const response = (await getData('workshop', 'student/workshops', { cookie: getToken() })).data
+            const { workshops } = response.result
+            setWorkshops(workshops)
+        }
+
+        init()
+    }, [])
+
+    const displayedWorkshop = workshops ? workshops.map((workshop, key) => <IonItem key={key}><IonLabel>{workshop.name}</IonLabel></IonItem>) : null
     return (
         <>
-            <h1>Recommandations</h1>
-            {displayList(recommandations)}
-            <h1>Interests</h1>
-            {displayList(interests)}
-            <h1>Skills</h1>
-            {displayList(skills)}
+            <Subtitle>Recommendations</Subtitle>
+            <Subtitle>Centres d'intérêts</Subtitle>
+            <Subtitle>Ateliers en cours</Subtitle>
+            <IonList>{displayedWorkshop}</IonList>
         </>
     )
 }
 
 const mapToProps = (state: RootState) => ({
-    username: getUsername(state),
-    recommandations: getRecommandations(state),
-    interests: getInterests(state),
-    skills: getSkills(state)
+    user: getUser(state)
 })
 
 export default connect(mapToProps)(StudentProfilePage)

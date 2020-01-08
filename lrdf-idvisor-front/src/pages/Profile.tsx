@@ -2,6 +2,7 @@ import { Role } from 'lrdf-idvisor-model'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../app/rootReducer'
+import { Title } from '../components/CustomText'
 import PageWithMenu from '../components/PageWithMenu'
 import AdminProfile from '../features/profile/AdminProfile'
 import StudentProfile from '../features/profile/StudentProfile'
@@ -22,7 +23,7 @@ const Profile: React.FC<ProfileInterface> = ({ username, role }) => {
     }
     return (
         <PageWithMenu title='Profile'>
-            <h1>Bienvenu sur votre profil {username}</h1>
+            <Title>Bienvenu sur votre profil {username}</Title>
             {content()}
         </PageWithMenu>
     )
