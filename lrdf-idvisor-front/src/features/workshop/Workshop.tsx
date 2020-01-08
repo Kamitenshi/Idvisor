@@ -1,4 +1,4 @@
-import { IonButton, IonInput, IonItem, IonLabel, IonSelect, IonSelectOption } from '@ionic/react'
+import { IonItem, IonLabel, IonSelect, IonSelectOption } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Subtitle, Title } from '../../components/CustomText'
@@ -22,6 +22,7 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
     const [students, setStudents] = useState()
     const [skills, setSkills] = useState()
     const [advisors, setAdvisors] = useState()
+    const [refresh, setRefresh] = useState(false)
 
     useEffect(() => {
         async function initState() {
@@ -31,9 +32,10 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
             setStudents(students)
             setSkills(skills)
             setAdvisors(advisors)
+            setRefresh(false)
         }
         initState()
-    }, [])
+    }, [refresh])
 
 
     const displayedStudents = students ? mapInList(students, (student, key) => <IonItem key={key}>{student.username}</IonItem>) : null
@@ -42,12 +44,10 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
 
 
     const [allStudents, setAllStudents] = useState<Student[]>([])
-    const [newSkill, setNewSkill] = useState<string>()
-    const [newStudents, setNewstudents] = useState<number>()
 
     useEffect(() => {
         async function getAllStudents() {
-            const response = (await getData('user', 'students')).data
+            let response = (await getData('user', 'students')).data
             setAllStudents(response.result)
         }
         getAllStudents()
@@ -56,8 +56,14 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
     const displayedAllStudents = allStudents ? allStudents.map(student => <IonSelectOption value={student.id}> {student.username}</IonSelectOption >)
         : null
 
-    const handleSelect = async (idStudents: any) => {
+    const handleSelectStudent = async (idStudents: any) => {
         await postData('workshop', 'add/student', { idStudents, workshopId: id })
+        setRefresh(true)
+    }
+
+    const handleSelectSKill = async (idSkills: any) => {
+        await postData('workshop', 'add/skill', { idSkills, workshopId: id })
+        setRefresh(true)
     }
 
 
@@ -67,15 +73,11 @@ const Workshop: React.FC<WorkshopInterface> = ({ match }) => {
             <Subtitle>Elèves</Subtitle>
             {displayedStudents}
             <IonItem>
-                <IonLabel>Sélectionner de nouveaux élèves</IonLabel>
-                <IonSelect multiple={true} onIonChange={e => handleSelect((e.target as HTMLInputElement).value)}>
+                <IonLabel>Sélectionner les élèves</IonLabel>
+                <IonSelect multiple={true} onIonChange={e => handleSelectStudent((e.target as HTMLInputElement).value)}>
                     {displayedAllStudents}
                 </IonSelect>
             </IonItem>
-            <Subtitle>Compétences</Subtitle>
-            {displayedSkills}
-            <IonInput type="text" />
-            <IonButton>Ajouter une compétence</IonButton>
             <Subtitle>Animateurs</Subtitle>
             {displayedAdvisors}
         </PageWithMenu>
