@@ -23,7 +23,7 @@ class UniversityController implements Controller {
     }
 
     private getAllUniversities = async (request: express.Request, response: express.Response) => {
-        this.universityRepository.find({ where: ['name'] })
+        this.universityRepository.find({ relations: ["curriculums"] })
             .then(HttpSuccess.sendCallback(response, "All universities gathered"))
             .catch(HttpException.sendCallback(response, 500, "All universities could not be gathered"));
     }
