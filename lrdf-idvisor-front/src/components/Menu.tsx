@@ -22,13 +22,13 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages, role }) => {
   }
 
   return (
-    <IonMenu type="overlay">
+    <IonMenu type="overlay" contentId='menucontent'>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Menu</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent id='menucontent'>
         <IonList>
           {appPages.map((appPage, index) => {
             if (!appPage.role || appPage.role === role)
