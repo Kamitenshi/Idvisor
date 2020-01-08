@@ -10,6 +10,7 @@ import errorMiddleware from './middleware/error';
 import config from './ormconfig';
 import AuthController from './services/auth/auth.controller';
 import ChatController from './services/chat/chat.controller';
+import CurriculumController from './services/curriculum/curriculum.controller';
 import UniversityController from './services/university/university.controller';
 import UserController from './services/user/user.controller';
 import WorkshopController from './services/workshop/workshop.controller';
@@ -51,6 +52,7 @@ class App {
             new UniversityController(),
             new UserController(),
             new WorkshopController(),
+            new CurriculumController(),
         ];
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);

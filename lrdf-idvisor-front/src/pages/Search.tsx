@@ -1,4 +1,5 @@
-import { IonApp, IonButton, IonContent, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
+import { IonApp, IonButton, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonList, IonRow, IonSearchbar, IonSelect, IonSelectOption, IonText } from '@ionic/react'
+import { University } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Subtitle, Title } from '../components/CustomText'
@@ -6,10 +7,6 @@ import PageWithMenu from '../components/PageWithMenu'
 import { getData } from '../utils/httpclient'
 
 interface SearchInterface extends RouteComponentProps { }
-
-interface University {
-    name: string
-}
 
 const Search: React.FC<SearchInterface> = () => {
     const [universities, setUniversities] = useState<University[]>([])
@@ -28,7 +25,6 @@ const Search: React.FC<SearchInterface> = () => {
 
     useEffect(() => {
         const sortList = (list: University[]) => {
-            console.log("tri de la liste :", list)
             switch (sortOrder) {
                 case "notAlpha": { return list.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? -1 : 1) }
                 default: { return list.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1) }
@@ -43,16 +39,20 @@ const Search: React.FC<SearchInterface> = () => {
         }
         else {
             return (
-                <IonList>
-                    {searchResults.map((university) => {
-                        return (
-                            <IonItem routerLink={'university/page/' + university.name}>
-                                <IonRow>
-                                    {university.name}
-                                </IonRow></IonItem>
-                        )
-                    })}
-                </IonList >
+                <IonGrid>
+                    <IonList>
+                        {searchResults.map((result) => {
+                            return (
+                                <IonItem routerLink={'university/page/' + result.name}>
+                                    <IonRow>
+                                        <IonCol><div> {result.name}</div></IonCol>
+                                    </IonRow>
+                                </IonItem>
+                            )
+                        })
+                        }
+                    </IonList >
+                </IonGrid>
             )
         }
     }
@@ -63,14 +63,6 @@ const Search: React.FC<SearchInterface> = () => {
                 <>
                     <Subtitle >Liste des filtres</Subtitle>
                     <IonList>
-                        <IonItem>
-                            <IonLabel>Ville</IonLabel>
-                            <IonSelect multiple={true} onIonChange={e => console.log((e.target as any).value)}>
-                                <IonSelectOption value="caen">Caen</IonSelectOption>
-                                <IonSelectOption value="paris1">Paris 1er</IonSelectOption>
-                                <IonSelectOption value="paris12">Paris 12e</IonSelectOption>
-                            </IonSelect>
-                        </IonItem>
                         <IonItem>
                             <IonLabel>Type</IonLabel>
                             <IonSelect multiple={true}>

@@ -19,18 +19,26 @@ class UniversityController implements Controller {
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, this.getAllUniversities);
         this.router.post(`${this.path}/add`, modelValidatorMiddleware(CreatingUniversity), isAdvisor, this.addUniversity);
+        this.router.get(`${this.path}/get`, this.getUniversity);
     }
 
     private getAllUniversities = async (request: express.Request, response: express.Response) => {
-        this.universityRepository.find({ select: ['name'] })
+        this.universityRepository.find({ where: ['name'] })
             .then(HttpSuccess.sendCallback(response, "All universities gathered"))
             .catch(HttpException.sendCallback(response, 500, "All universities could not be gathered"));
+    }
+
+    private getUniversity = async (request: express.Request, response: express.Response) => {
+        const { name } = request.query
+        this.universityRepository.findOne(name, { relations: ["curriculums"] })
+            .then(HttpSuccess.sendCallback(response, "University found"))
+            .catch(HttpException.sendCallback(response, 500, "Couldn't find the university"));
     }
 
     private addUniversity = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
         const universityData: UniversityDB = { ...request.body };
         try {
-            const found = await this.universityRepository.findOne({ name: universityData.name })
+            const found = await this.universityRepository.findOne({ name: universityData.name, curriculums: [] })
             if (found === undefined) {
                 this.universityRepository.insert(universityData)
                     .then(HttpSuccess.sendCallback(response, "University successfuly created"))

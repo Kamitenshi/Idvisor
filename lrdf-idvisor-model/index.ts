@@ -7,3 +7,22 @@ export interface UserData {
     username: string
     email: string
 }
+
+export type University = {
+    name: string
+    description: string
+    address: string
+    city: string
+    postalCode: string
+    url: string
+    curriculums: Curriculum[]
+}
+
+export type Curriculum = {
+    id: number
+    name: string
+    description: string
+    university: University
+    url: string
+    skills: string[]
+}
