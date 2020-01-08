@@ -3,13 +3,15 @@ import Cookie from 'js-cookie'
 import { Role, UserData } from 'lrdf-idvisor-model'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
+import { RouteComponentProps } from 'react-router-dom'
 import { RootState } from '../app/rootReducer'
 import { getRole, getUser } from '../features/session/sessionSlice'
 import { getData, getToken, socket } from '../utils/httpclient'
 import { mapInList } from '../utils/list'
 
 
-interface SideBarInterface {
+interface SideBarInterface extends RouteComponentProps {
     setter: (_: string, __: number) => void
     user: UserData
 }
@@ -19,7 +21,7 @@ interface UserInfo {
     id: number
 }
 
-const SideBar: React.FC<SideBarInterface> = ({ user, setter }) => {
+const SideBar: React.FC<SideBarInterface> = ({ history, user, setter }) => {
     const [users, setUsers] = useState<UserInfo[]>([])
     const [displayedItems, setDisplayedItems] = useState<any[]>([])
     const [search, setSearch] = useState('')
@@ -61,10 +63,13 @@ const SideBar: React.FC<SideBarInterface> = ({ user, setter }) => {
         setSearch((e.target as HTMLInputElement).value)
     }
 
+    const redirect = () => history.push('/profile')
+
     return (
         <IonMenu type='overlay' side='start' contentId='menuContent'>
             <IonHeader>
                 <IonToolbar>
+                    <IonButton onClick={redirect}>Retourner à son profil</IonButton>
                     <IonTitle>Conversations</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -77,6 +82,8 @@ const SideBar: React.FC<SideBarInterface> = ({ user, setter }) => {
         </IonMenu>
     )
 }
+
+const SideBarHistory = withRouter(SideBar)
 
 interface ChatInterface {
     user: UserData
@@ -127,7 +134,7 @@ const Chat: React.FC<ChatInterface> = ({ user, role }) => {
     const title = discussionTitle ? `Discuter avec ${discussionTitle}` : null
     return (
         <IonSplitPane contentId='main'>
-            <SideBar user={user} setter={startConversation} />
+            <SideBarHistory user={user} setter={startConversation} />
             <IonPage id='main'>
                 <h1>{title}</h1>
                 <IonList>
