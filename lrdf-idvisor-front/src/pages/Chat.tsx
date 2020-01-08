@@ -63,10 +63,10 @@ const SideBar: React.FC<SideBarInterface> = ({ history, user, setter }) => {
         setSearch((e.target as HTMLInputElement).value)
     }
 
-    const redirect = () => history.push('/profile')
+    const redirect = () => history.replace('/profile')
 
     return (
-        <IonMenu type='overlay' side='start' contentId='menuContent'>
+        <IonMenu type='overlay' side='start' contentId='chat-menu'>
             <IonHeader>
                 <IonToolbar>
                     <IonButton onClick={redirect}>Retourner à son profil</IonButton>
@@ -74,7 +74,7 @@ const SideBar: React.FC<SideBarInterface> = ({ history, user, setter }) => {
                 </IonToolbar>
             </IonHeader>
 
-            <IonContent id='menuContent'>
+            <IonContent id='chat-menu'>
                 <IonSearchbar animated={true} value={search}
                     onIonChange={(e) => handleSearchbar(e)} />
                 {displayItems()}
