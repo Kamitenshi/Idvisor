@@ -6,6 +6,7 @@ import { isAdmin, isUser } from '../../middleware/auth';
 import Controller from '../../utils/controller';
 import { env } from '../../utils/env';
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
+import { checkToken } from '../../utils/jwt';
 import UserDB, { Student } from './user.entity';
 
 
@@ -25,8 +26,27 @@ class UserController implements Controller {
         this.router.get(`${this.path}/all`, isAdmin, this.getAllUsers)
         this.router.get(`${this.path}/chat`, this.getAllChat)
         this.router.get(`${this.path}/students`, this.getAllStudents)
+        this.router.get(`${this.path}/students/interest`, this.getInterests)
         this.router.delete(`${this.path}/delete`, isAdmin, this.deleteUser)
         this.router.patch(`${this.path}/modify`, isUser, this.modifySettings) // TODO: Check user format
+        this.router.post(`${this.path}/add/fields`, this.addField)
+    }
+
+    private getInterests = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const { cookie } = request.query
+        const id = checkToken(cookie).id
+        const student = await this.studentRepo.findOne({ where: [{ userId: id }], relations: ['centerOfInterests'] })
+        HttpSuccess.send(response, "Center of interest", student?.centerOfInterests)
+
+    }
+    private addField = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const { id, fields } = request.body
+        const student = await this.studentRepo.findOne({ where: [{ userId: id }] })
+        if (student) {
+            student.centerOfInterests = fields.map(id => ({ id }))
+            this.studentRepo.save(student)
+            HttpSuccess.send(response, "Field added")
+        }
     }
 
     private getAllStudents = async (request: express.Request, response: express.Response, next: express.NextFunction) => {

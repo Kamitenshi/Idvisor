@@ -2,6 +2,7 @@ import express from 'express';
 import { getRepository } from 'typeorm';
 import Controller from "../../utils/controller";
 import { HttpException, HttpSuccess } from '../../utils/HttpReply';
+import { checkToken } from '../../utils/jwt';
 import UserDB, { Advisor, Field, Skill, Student } from "../user/user.entity";
 import { Workshop } from "./workshop.entity";
 
@@ -22,11 +23,26 @@ class WorkshopController implements Controller {
     //TODO: add isAdvisor everywhere
     private initializeRoutes() {
         this.router.get(`${this.path}/all`, this.getAllWorkshops)
+        this.router.get(`${this.path}/student/workshops`, this.getWorkshopStudent)
         this.router.get(`${this.path}/information`, this.getWorkshopInformation)
         this.router.post(`${this.path}/create/workshop`, this.createWorkshop)
         this.router.post(`${this.path}/create/skill`, this.createSkill)
         this.router.post(`${this.path}/add/student`, this.addStudent)
         this.router.post(`${this.path}/add/skill`, this.addSkill)
+    }
+
+    private getWorkshopStudent = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        const token = checkToken(request.query.cookie)
+        const id = token.id
+
+        const student = await this.studentRepo.findOne({ where: [{ userId: id }], relations: ["workshops"] })
+
+        if (student) {
+            const { workshops } = student
+            HttpSuccess.send(response, "Workshops", { workshops })
+        }
+        else
+            next(new HttpException(403, "Could not get user data"))
     }
 
     private addStudent = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
